@@ -1,5 +1,5 @@
 import 'bootstrap/dist/css/bootstrap.css'
-import NavBar from '@/components/NavBar'
+import NavBar from '@/components/LoggedNavBar'
 import type { Metadata } from 'next'
 
 export const metadata: Metadata = {
@@ -15,13 +15,13 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html lang="en">
-      <body>
+
+      <body className='bg-orange-300'>
         <NavBar />
         <main>
           {children}
         </main>
       </body>
-    </html>
+
   )
 }

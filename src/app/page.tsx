@@ -1,13 +1,18 @@
 import ImageComparison from '@/components/CompareImages'
-import NavBar from '@/components/NavBar'
 import { Users, Calendar, BarChart3, Building2 } from 'lucide-react'
+import type { Metadata } from 'next'
+import './globals.css'
+
+export const metadata: Metadata = {
+  title: 'Main',
+}
+
 
 export default function NotLoggedPage () {
   return (
     <div className='flex flex-col min-h-screen '>
-      <NavBar />
       <main className='flex-1'>
-        <section className='w-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-r from-blue-600 to-indigo-600'>
+        <section className='w-full h-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-r from-blue-600 to-indigo-600'>
           <div className='container px-4 md:px-6'>
             <div className='grid gap-6 lg:grid-cols-[1fr_400px] lg:gap-12 xl:grid-cols-[1fr_600px]'>
               <div className='flex flex-col justify-center space-y-4 text-white'>
@@ -21,12 +26,7 @@ export default function NotLoggedPage () {
                     Optimiza procesos, mejora la comunicación y toma decisiones informadas con nuestra plataforma integral.
                   </p>
                 </div>
-                <div className='flex flex-col gap-2 min-[400px]:flex-row'>
-                  <button className='p-2 rounded-md bg-white text-blue-600 hover:bg-gray-100'>Comenzar prueba gratuita</button>
-                  <button className='p-2 rounded-md bg-blue-600 text-white border-white hover:bg-white/10'>Ver demostración</button>
-                </div>
               </div>
-
               <div className='select-none flex flex-row justify-center items-center'>
                 <ImageComparison
                   alt='a'

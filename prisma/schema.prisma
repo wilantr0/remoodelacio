@@ -1,0 +1,186 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id                String              @id @default(cuid())
+  name              String?
+  email             String              @unique
+  password          String
+  role              Role                @default(alumn)
+  image             String?
+  createdAt         DateTime            @default(now())
+  updatedAt         DateTime            @default(now()) @updatedAt
+  accounts          Account[]
+  announcements     Announcement[]
+  materials         ClassroomMaterial[]
+  classroomUsers    ClassroomUser[]
+  createdClassrooms Classroom[]         @relation("ClassroomCreatedBy")
+  comments          Comment[]
+  grades            Grade[]
+  notifications     Notification[]
+  submissions       Submission[]        @relation("StudentSubmissions")
+
+  @@map("users")
+}
+
+model Account {
+  userId            String
+  type              String
+  provider          String
+  providerAccountId String
+  refresh_token     String?
+  access_token      String?
+  expires_at        Int?
+  token_type        String?
+  scope             String?
+  id_token          String?
+  session_state     String?
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @default(now()) @updatedAt
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@id([provider, providerAccountId])
+  @@map("accounts")
+}
+
+model VerificationToken {
+  identifier String
+  token      String
+  expires    DateTime
+
+  @@id([identifier, token])
+  @@map("verification_tokens")
+}
+
+model Classroom {
+  classroom_id  Int                 @id @default(autoincrement())
+  name          String
+  description   String?
+  created_by_id String
+  created_at    DateTime            @default(now())
+  announcements Announcement[]
+  assignments   Assignment[]
+  materials     ClassroomMaterial[]
+  users         ClassroomUser[]
+  created_by    User                @relation("ClassroomCreatedBy", fields: [created_by_id], references: [id])
+
+  @@map("classrooms")
+}
+
+model ClassroomUser {
+  classroom_id Int
+  userId       String
+  role         String
+  joined_at    DateTime  @default(now())
+  classroom    Classroom @relation(fields: [classroom_id], references: [classroom_id])
+  user         User      @relation(fields: [userId], references: [id])
+
+  @@id([classroom_id, userId])
+  @@map("classroom_users")
+}
+
+model Assignment {
+  assignment_id Int          @id @default(autoincrement())
+  classroom_id  Int
+  title         String
+  description   String?
+  due_date      DateTime?
+  created_at    DateTime     @default(now())
+  classroom     Classroom    @relation(fields: [classroom_id], references: [classroom_id])
+  comments      Comment[]
+  grades        Grade[]
+  submissions   Submission[] @relation("AssignmentSubmissions")
+
+  @@map("assignments")
+}
+
+model Submission {
+  submission_id Int        @id @default(autoincrement())
+  assignment_id Int
+  student_id    String
+  submitted_at  DateTime   @default(now())
+  file_path     String?
+  grade         Float?
+  feedback      String?
+  assignment    Assignment @relation("AssignmentSubmissions", fields: [assignment_id], references: [assignment_id])
+  student       User       @relation("StudentSubmissions", fields: [student_id], references: [id])
+
+  @@map("submissions")
+}
+
+model Announcement {
+  announcement_id Int       @id @default(autoincrement())
+  classroom_id    Int
+  created_by_id   String
+  title           String
+  content         String
+  created_at      DateTime  @default(now())
+  classroom       Classroom @relation(fields: [classroom_id], references: [classroom_id])
+  created_by      User      @relation(fields: [created_by_id], references: [id])
+  comments        Comment[]
+
+  @@map("announcements")
+}
+
+model Comment {
+  comment_id      Int           @id @default(autoincrement())
+  userId          String
+  assignment_id   Int?
+  announcement_id Int?
+  content         String
+  created_at      DateTime      @default(now())
+  announcement    Announcement? @relation(fields: [announcement_id], references: [announcement_id])
+  assignment      Assignment?   @relation(fields: [assignment_id], references: [assignment_id])
+  user            User          @relation(fields: [userId], references: [id])
+
+  @@map("comments")
+}
+
+model ClassroomMaterial {
+  material_id    Int       @id @default(autoincrement())
+  classroom_id   Int
+  uploaded_by_id String
+  title          String
+  description    String?
+  file_path      String
+  uploaded_at    DateTime  @default(now())
+  classroom      Classroom @relation(fields: [classroom_id], references: [classroom_id])
+  uploaded_by    User      @relation(fields: [uploaded_by_id], references: [id])
+
+  @@map("classroom_materials")
+}
+
+model Grade {
+  grade_id      Int        @id @default(autoincrement())
+  assignment_id Int
+  student_id    String
+  grade         Float
+  graded_at     DateTime   @default(now())
+  assignment    Assignment @relation(fields: [assignment_id], references: [assignment_id])
+  student       User       @relation(fields: [student_id], references: [id])
+
+  @@map("grades")
+}
+
+model Notification {
+  notification_id Int      @id @default(autoincrement())
+  userId          String
+  message         String
+  is_read         Boolean  @default(false)
+  created_at      DateTime @default(now())
+  user            User     @relation(fields: [userId], references: [id])
+
+  @@map("notifications")
+}
+
+enum Role {
+  alumn
+  teacher
+  super
+}
