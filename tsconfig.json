@@ -18,7 +18,10 @@
       }
     ],
     "paths": {
-      "@/*": ["./src/*"]
+      "@/*": ["./src/*"],
+      "@components/*": ["./src/components/*"],
+      "@lib/*": ["./src/lib/*"],
+      "@styles/*": ["./src/styles/*"]
     }
   },
   "include": [
@@ -27,7 +30,9 @@
     "**/*.tsx",
     ".next/types/**/*.ts",
     "src/utils/session.ts",
-    "src/app/(protected)/dashboard/pagejs"
+    "src/app/(protected)/dashboard/pagejs",
+    "src/app/api/ping/route.js",
+    "src/lib/database.js"
   ],
   "exclude": ["node_modules"]
 }

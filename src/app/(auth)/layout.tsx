@@ -6,6 +6,7 @@ export default function LoginLayout({
   return (
     <html lang="en">
       <body>
+        <h1>a</h1>
         <main>{children}</main>
       </body>
     </html>

@@ -1,7 +1,7 @@
 import { Pool } from 'pg'
 
 
-let conn:any
+let conn: Pool | undefined
 
 console.log(process.env.URI_SERVER)
 

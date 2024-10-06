@@ -4,7 +4,7 @@ import { FaRegEyeSlash, FaRegEye, FaFacebook, FaGoogle } from 'react-icons/fa';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useRouter } from 'next/navigation';
-import { SignupFormSchema } from '@/utils/definitions';
+import { SignupFormSchema } from '@/lib/definitions';
 
 export default function Register() {
   const router = useRouter();

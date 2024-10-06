@@ -1,5 +1,4 @@
 import { cookies } from "next/headers";
-import { decrypt } from "@/utils/session";
 
 // Componente principal
 export default async function AsistenciaPage() {
