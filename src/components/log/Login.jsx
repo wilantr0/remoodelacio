@@ -1,117 +1,125 @@
 "use client"; // Asegura que el componente es un Client Component
-import { useState } from 'react'
-import { FaRegEyeSlash, FaRegEye, FaFacebook, FaGoogle } from 'react-icons/fa'
-import { useForm } from 'react-hook-form'
-import { estilos } from './style'
-import { Montserrat } from 'next/font/google'
-import { useRouter } from 'next/navigation' // Cambia a next/navigation en vez de next/router
+import { useState } from 'react';
+import { FaRegEyeSlash, FaRegEye, FaFacebook, FaGoogle } from 'react-icons/fa';
+import { useForm } from 'react-hook-form';
+import { estilos } from './style';
+import { Montserrat } from 'next/font/google';
+import { login } from '@/app/actions/auth'; // Supongo que esta función hace la llamada al backend para autenticar
 
-export const montserrat = Montserrat({ subsets: ['latin'] })
+export const montserrat = Montserrat({ subsets: ['latin'] });
 
-export default function Login () {
-  const router = useRouter()
+export default function Login() {
   const {
     register,
-    formState: { errors }
-  } = useForm()
+    formState: { errors },
+    handleSubmit, // Usamos handleSubmit de react-hook-form para mejor manejo de formularios
+  } = useForm();
 
-  const handleLogIn = async (event) => {
-    event.preventDefault()
-    const { mail, password } = Object.fromEntries(new FormData(event.target))
+  const [showPass, setShowPass] = useState(false);
+  const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Para mostrar errores del backend
+  const [loading, setLoading] = useState(false); // Para mostrar un indicador de carga
 
-    console.log(mail)
-    console.log(password)
+  const handlePasswordChange = (event) => {
+    setPassword(event.target.value);
+  };
+
+  const togglePasswordVisibility = (e) => {
+    e.preventDefault();
+    setShowPass(!showPass);
+  };
+
+  // Función para manejar el login, que ahora maneja también la respuesta y errores
+  const handleLogIn = async (data) => {
+    setLoading(true); // Indicamos que está en proceso
+    setErrorMessage(''); // Reseteamos cualquier mensaje de error previo
+
     try {
-      const res = await fetch('/api/auth/login', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ mail, password })
-      })
+      // Llamada a la función de login que hará la autenticación en el backend
+      const response = await login(data);
 
-      const data = await res.json()
-      console.log(data)
-      console.log(res.ok)
-      if (res.ok) {
-        console.log(data.token)
-        router.push('/') // Redirigir al usuario
-        console.log('Usuario registrado exitosamente:', data)
+      if (response.ok) {
+        // Redirigir o hacer algo si el login es exitoso
+        window.location.href = '/dashboard'; // Ejemplo de redirección
       } else {
-        console.error('Error al registrar el usuario:', data.error)
+        // Mostrar mensaje de error si algo sale mal
+        const errorData = await response.json();
+        setErrorMessage(errorData.message || 'Error de autenticación');
       }
     } catch (error) {
-      console.error('Error de red u otro error:', error)
+      // Capturar y mostrar cualquier error no manejado
+      setErrorMessage('Error de servidor. Por favor, intenta de nuevo.');
+    } finally {
+      setLoading(false); // Parar el indicador de carga
     }
-  }
-
-  const [showPass, setShowPass] = useState(false)
-  const [password, setPassword] = useState('')
-
-  const handlePasswordChange = event => {
-    setPassword(event.target.value)
-  }
-
-  const togglePasswordVisibility = e => {
-    e.preventDefault()
-    setShowPass(!showPass)
-  }
+  };
 
   return (
-    <section className='form-container sign-in-container'>
+    <section className="form-container sign-in-container">
       <style>{estilos}</style>
       <form
-        action=''
-        onSubmit={handleLogIn}
-        className='bg-white flex justify-center items-center flex-col py-0 px-12 h-full text-center'
+        onSubmit={handleSubmit(handleLogIn)} // Usamos handleSubmit aquí
+        className="bg-white flex justify-center items-center flex-col py-0 px-12 h-full text-center"
       >
         <h1>Iniciar sesión</h1>
-        <div className='social-container'>
-          <a className='social-login' href=''>
+        <div className="social-container">
+          <a className="social-login" href="">
             <FaFacebook />
           </a>
-          <a className='social-login' href=''>
+          <a className="social-login" href="">
             <FaGoogle />
           </a>
         </div>
         <span>o utiliza tu mail</span>
+        
+        {/* Input de email */}
         <input
-          {...register('mail', { required: true })}
-          className='input'
-          type='email'
-          placeholder='e-mail'
+          {...register('email', { required: 'El correo es obligatorio' })} // Validación con mensaje
+          className="input"
+          type="email"
+          placeholder="e-mail"
           style={{ width: '100%' }}
         />
-        <span className='text-xs text-red-800'>
-          {errors?.mail?.type === 'required' && 'El correo es obligatorio'}
+        <span className="text-xs text-red-800">
+          {errors.email?.message}
         </span>
-        <div className='password-container' style={{ width: '100%' }}>
+
+        {/* Input de contraseña */}
+        <div className="password-container" style={{ width: '100%' }}>
           <input
-            {...register('password', { required: true, minLength: 8 })}
-            className='input'
+            {...register('password', { required: 'La contraseña es obligatoria', minLength: { value: 8, message: 'La contraseña debe tener mínimo 8 caracteres' } })}
+            className="input"
             type={showPass ? 'text' : 'password'}
-            placeholder='contraseña'
+            placeholder="contraseña"
             value={password}
-            id='password'
+            id="password"
             onChange={handlePasswordChange}
             style={{ width: '100%' }}
           />
-          <span className='show-password-checkbox'>
-            <button id='showPassword' onClick={togglePasswordVisibility}>
-              <label htmlFor='showPassword'>
+          <span className="show-password-checkbox">
+            <button id="showPassword" onClick={togglePasswordVisibility}>
+              <label htmlFor="showPassword">
                 {showPass ? <FaRegEyeSlash /> : <FaRegEye />}
               </label>
             </button>
           </span>
         </div>
-        <span className='text-xs text-red-800'>
-          {errors?.password?.type === 'minLength' &&
-            'La contraseña debe tener minimo 8 caracteres'}
+        <span className="text-xs text-red-800">
+          {errors.password?.message}
         </span>
-        <span className='text-xs text-red-800'>
-          {errors?.password?.type === 'required' &&
-            'La contraseña es obligatoria'}
-        </span>
-        <input type='submit' value='Log in' />
+
+        {/* Mensaje de error */}
+        {errorMessage && (
+          <span className="text-xs text-red-800 mb-4">
+            {errorMessage}
+          </span>
+        )}
+
+        {/* Botón de submit */}
+        <button type="submit" disabled={loading} className="submit-button">
+          {loading ? 'Cargando...' : 'Log in'}
+        </button>
       </form>
     </section>
-  )
+  );
 }

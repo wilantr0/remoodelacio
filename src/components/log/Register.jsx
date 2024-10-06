@@ -47,7 +47,7 @@ export default function Register() {
 
   return (
     <section className="form-container sign-up-container">
-      <form action={signup} onSubmit={handleSubmit(handleSignUp)}>
+      <form onSubmit={handleSubmit(handleSignUp)}>
         <h1>Crear cuenta</h1>
         <div className="social-container">
           <a className="social-login" href="#">

@@ -4,9 +4,9 @@ import { conn } from '@/utils/database';
 export async function GET(req: NextApiRequest, res: NextApiResponse) {
       try {
         const response = await conn.query('SELECT * FROM classrooms');
-        return res.json(response.rows)
+        res.status(200).json(response.rows);
       } catch (error) {
-        return res.json(error)
+        res.status(500).json( error );
       }
           }
 

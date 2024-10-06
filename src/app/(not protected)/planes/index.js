@@ -1,5 +1,5 @@
 import Layout from '@layouts/MainLayout.js'
-import PlansCard from '../../components/PlansCard.js'
+import PlansCard from '../../../components/PlansCard.js'
 
 export default function Planes () {
   return (
