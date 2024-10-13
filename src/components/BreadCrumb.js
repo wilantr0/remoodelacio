@@ -2,7 +2,7 @@ import 'dotenv/config'
 import React, { useState, useEffect } from 'react'
 
 async function fetchUserData (userId) {
-  const res = await fetch(`${process.env.SERVER_URL}/api/classes/${userId}`)
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/classes/${userId}`)
   const data = await res.json()
   return data
 }
