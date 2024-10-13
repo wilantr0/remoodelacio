@@ -16,10 +16,10 @@ export default function NavBar () {
           <a className='text-sm font-medium hover:text-blue-600 decoration-transparent' href='/about'>Sobre Nosotros</a>
         </nav>
         <div className='flex items-center space-x-4'>
-          <Link href='/login?st=tr'>
+          <Link href='/login'>
             <button className='text-blue-600 p-2 px-4 rounded-md font-semibold'>Login</button>
           </Link>
-          <Link href='/login?st=fl'>
+          <Link href='/signup'>
             <button className='bg-blue-600 hover:bg-blue-700 text-white px-4 p-2 rounded-md'>Sign-up</button>
           </Link>
         </div>
