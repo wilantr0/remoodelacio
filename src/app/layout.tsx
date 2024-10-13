@@ -1,6 +1,7 @@
 import 'bootstrap/dist/css/bootstrap.css'
 import NavBar from '@/components/NavBar'
 import type { Metadata } from 'next'
+import './globals.css'
 
 export const metadata: Metadata = {
   title: {
@@ -16,6 +17,9 @@ export default function RootLayout({
 }) {
   return (
     <html lang="en">
+      <head>
+      <link rel="icon" href="/favicon.ico" sizes="any" />
+      </head>
       <body>
         <NavBar />
         <main>

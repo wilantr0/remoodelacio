@@ -23,7 +23,7 @@
     "clsx": "^2.1.1",
     "jose": "^5.9.2",
     "jsonwebtoken": "^9.0.2",
-    "next": "^13.5.7",
+    "next": "^14.2.15",
     "next-auth": "^4.24.8",
     "pg-promise": "^11.9.1",
     "radix-ui": "^1.0.1",
@@ -36,6 +36,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@paralleldrive/cuid2": "^2.2.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-dom": "^18",

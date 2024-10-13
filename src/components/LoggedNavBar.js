@@ -2,7 +2,7 @@
 import Image from 'next/image'
 
 
-export default function NavBar () {
+export default function LoggedNavBar () {
   return (
     <header className='px-4 lg:px-6 h-20 flex items-center justify-between border-b'>
       <div className='container mx-auto flex flex-row justify-between items-center'>

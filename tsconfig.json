@@ -32,7 +32,9 @@
     "src/utils/session.ts",
     "src/app/(protected)/dashboard/pagejs",
     "src/app/api/ping/route.js",
-    "src/lib/database.js"
+    "src/lib/database.js",
+    "src/app/api/signup/route.js",
+    "src/app/api/login/route.js"
   ],
   "exclude": ["node_modules"]
 }

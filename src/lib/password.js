@@ -5,3 +5,7 @@ export async function hashPassword(password){
   return hashedPassword
 }
 
+export async function validatePassword(password, hashedPassword){
+  const isValid = await bcrypt.compare(password, hashedPassword)
+  return isValid
+}

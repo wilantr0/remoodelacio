@@ -15,33 +15,33 @@ export default function RegisterPage() {
           </CardDescription>
         </CardHeader>
         <form action="/api/signup" method="post">
-
-        <CardContent className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="name">Nombre completo</Label>
-            <Input id="name" placeholder="Juan Pérez" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="email">Correo electrónico</Label>
-            <Input id="email" type="email" placeholder="tu@email.com" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="password">Contraseña</Label>
-            <Input id="password" type="password" />
-          </div>
-          <div className="space-y-2">
-            <Label htmlFor="role">Selecciona tu rol:</Label>
-            <select className='input w-full p-2 border border-gray-300 rounded-md' name='role' id='role'>
-              <option value='teacher'>Profesor/a</option>
-              <option value='alumn'>Alumno/a</option>
-              <option value='super'>Gestor/a</option>
-            </select>
-          </div>
-        </CardContent>
-        <CardFooter>
-          <Button className="w-full bg-blue-600 hover:bg-blue-700 text-white">Registrarse</Button>
-        </CardFooter>
+          <CardContent className="space-y-4">
+            <div className="space-y-2">
+              <Label className="text-black" htmlFor="name">Nombre completo</Label>
+              <Input className="text-black" id="name" name="name" placeholder="Juan Pérez" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-black" htmlFor="email">Correo electrónico</Label>
+              <Input className="text-black" id="email" name="email" type="email" placeholder="tu@email.com" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-black" htmlFor="password">Contraseña</Label>
+              <Input className="text-black" id="password" name="password" type="password" />
+            </div>
+            <div className="space-y-2">
+              <Label className="text-black" htmlFor="role">Selecciona tu rol:</Label>
+              <select className="text-black input w-full p-2 border border-gray-300 rounded-md" name="role" id="role">
+                <option value="teacher">Profesor/a</option>
+                <option value="alumn">Alumno/a</option>
+                <option value="super">Gestor/a</option>
+              </select>
+            </div>
+          </CardContent>
+          <CardFooter>
+            <Button variant="default" size="full" className="py-2">Registrarse</Button>
+          </CardFooter>
         </form>
+
       </Card>
     </div>
   )
