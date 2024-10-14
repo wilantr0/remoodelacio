@@ -1,10 +1,10 @@
+'use client'
 import { useState } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
   Plus
 } from 'lucide-react'
-import MainLayout from '../../layouts/LlogedLayout'
 
 export default function Component () {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -55,8 +55,6 @@ export default function Component () {
 
   return (
     <div className='flex flex-col h-screen bg-background text-foreground'>
-      {/* Header */}
-      <MainLayout title='Agenda' />
 
       <div className='flex flex-1 overflow-hidden'>
         {/* Sidebar */}

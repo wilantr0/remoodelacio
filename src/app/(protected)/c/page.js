@@ -14,7 +14,7 @@ export default  function Classes () {
             (clases.map((e) => {
               console.log(e)
               return (
-                <ClassCard classItem={e} classId={e.classroom_id} key={e.classroom_id} />
+                <ClassCard key={e.classroom_id} />
               )
             })):( 
             <div className='w-screen flex flex-col justify-center items-center gap-2'> 
