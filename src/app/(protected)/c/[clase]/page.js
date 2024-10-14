@@ -1,4 +1,5 @@
-import ClassLayout from '@layouts/ClassLayout.js'
+'use client'
+
 import { useRouter } from 'next/navigation'
 
 export default function Clase () {
@@ -8,8 +9,6 @@ export default function Clase () {
   console.log(classId)
 
   return (
-    <ClassLayout title='q' classId={classId}>
       <h1>{router.query.clase}</h1>
-    </ClassLayout>
   )
 }

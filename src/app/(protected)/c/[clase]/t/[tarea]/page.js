@@ -1,6 +1,6 @@
-import BreadCrumb from '../../../../components/BreadCrumb.js'
-import ClassLayout from '../../../../layouts/ClassLayout.js'
-import { useRouter } from 'next/router'
+'use client'
+import BreadCrumb from '@components/BreadCrumb.js'
+import { useRouter } from 'next/navigation'
 
 export default function Tarea () {
   const router = useRouter()
@@ -10,9 +10,9 @@ export default function Tarea () {
   console.log(query)
 
   return (
-    <ClassLayout title='q'>
+    <section>
       <h1>Tarea</h1>
       <BreadCrumb classItem={query.clase} task={query.tarea} />
-    </ClassLayout>
+    </section>
   )
 }
