@@ -16,7 +16,7 @@ export default function LoggedNavBar () {
           <a className='text-sm font-medium hover:text-blue-600 decoration-transparent' href='/bloc'>Bloc</a>
         </nav>
         <div className='flex-shrink-0'>
-          <a href='/login'>
+          <a href='/user-page'>
             <button className='p-2 border-2 border-black rounded-full flex items-center justify-center'>
               <img
                 alt='user icon'

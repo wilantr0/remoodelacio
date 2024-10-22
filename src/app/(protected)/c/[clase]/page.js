@@ -5,7 +5,7 @@ import { useRouter } from 'next/navigation'
 export default function Clase () {
   const router = useRouter()
 
-  const classId = router.query.clase
+  const classId = router.query.clase 
   console.log(classId)
 
   return (

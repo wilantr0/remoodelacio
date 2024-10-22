@@ -30,6 +30,7 @@ export default function LoginPage() {
 
       if (res.ok) {
         // Login exitoso, maneja la respuesta aquí, por ejemplo, redirigir al dashboard
+        localStorage.setItem('token', data.token)
         console.log('Login exitoso', data);
         router.push('/dashboard')
       } else {

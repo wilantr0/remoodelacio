@@ -40,7 +40,7 @@ export async function POST(req) {
     // Si el login es exitoso
     const token = jwt.sign({user: user.id}, process.env.JWT_SECRET, {expiresIn:"1d"})
     cookies().set("cookieUser", token)
-    return NextResponse.json({ message: 'Login exitoso', user }, { status: 200 });
+    return NextResponse.json({ message: 'Login exitoso', token, user }, { status: 200 });
   } catch (error) {
     return NextResponse.json({ message: 'Error en el servidor. ' + error.message }, { status: 500 });
   }

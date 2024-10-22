@@ -5,33 +5,8 @@ import jwt from 'jsonwebtoken'
 
 const prisma = new PrismaClient()
 
-export async function GET(){
-  const token = cookies().get("cookieUser")?.value
-  const userId = jwt.verify(token, process.env.JWT_SECRET);
-
-
-  try{
-
-    const classroomsAlumn = await prisma.classroomUser.findMany({
-      where:{
-        userId: userId
-      }
-    })
-
-    const classroomsTeach = await prisma.classroom.findMany({
-      where:{
-        created_by_id: userId
-      }
-    })
-
-    const classrooms = {...classroomsAlumn, ...classroomsTeach}
-
-    console.log(classrooms)
-    
-    return NextResponse.json(classroomsTeach)
-  } catch(error){
-    return NextResponse.json(error)
-  }
+export async function GET() {
+  
 }
 
 export async function POST(req){
@@ -47,7 +22,7 @@ export async function POST(req){
     const classrooms = await prisma.classroom.create({
       data:{
         name: name,
-        created_by_id: userId.value,
+        created_by_id: userId.user,
         description: description
       }
     })
