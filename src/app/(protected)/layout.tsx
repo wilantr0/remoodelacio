@@ -1,27 +1,24 @@
-import 'bootstrap/dist/css/bootstrap.css'
-import LoggedNavBar from '@/components/LoggedNavBar'
-import type { Metadata } from 'next'
+import 'bootstrap/dist/css/bootstrap.css';
+import LoggedNavBar from '@/components/LoggedNavBar';
+import type { Metadata } from 'next';
 
 export const metadata: Metadata = {
   title: {
     template: '%s | Remoodelacio',
-    default: 'Remoodelacio', // a default is required when creating a template
+    default: 'Remoodelacio',
   },
-}
+};
 
-export default function RootLayout({
+export default function ProtectedLayout({
   children,
 }: {
-  children: React.ReactNode
+  children: React.ReactNode;
 }) {
   return (
-
-      <body className=''>
+    <div>
         <LoggedNavBar />
-        
-          {children}
-        
-      </body>
+        <main>{children}</main>
+    </div>
 
-  )
+  );
 }

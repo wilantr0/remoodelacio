@@ -1,0 +1,40 @@
+
++---prisma
+�   +---migrations
+�       +---20240915164146_1
++---public
+�   +---uploads
+�   +---zohoverify
++---src
+    +---app
+    �   +---(auth)
+    �   �   +---login
+    �   �   +---signup
+    �   +---(not protected)
+    �   �   +---about
+    �   �   +---contact
+    �   �   +---planes
+    �   �   +---servicios
+    �   +---(protected)
+    �   �   +---assistance
+    �   �   +---bloc
+    �   �   +---c
+    �   �   �   +---[clase]
+    �   �   �       +---t
+    �   �   �           +---[tarea]
+    �   �   +---calendar
+    �   �   +---dashboard
+    �   �   +---user-page
+    �   +---api
+    �   �   +---clases
+    �   �   �   +---[clase]
+    �   �   +---contact
+    �   �   +---login
+    �   �   +---ping
+    �   �   +---signup
+    �   �   +---users
+    �   �       +---[user]
+    �   +---fonts
+    +---components
+    �   +---ui
+    +---lib

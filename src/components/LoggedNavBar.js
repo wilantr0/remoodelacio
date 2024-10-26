@@ -17,11 +17,11 @@ export default function LoggedNavBar () {
         </nav>
         <div className='flex-shrink-0'>
           <a href='/user-page'>
-            <button className='p-2 border-2 border-black rounded-full flex items-center justify-center'>
+            <button className=' rounded-full flex items-center justify-center'>
               <img
                 alt='user icon'
-                src='/user-iconn.png'
-                className='w-6 h-6'
+                src='/placeholder.png'
+                className='w-12 h-12'
               />
             </button>
           </a>

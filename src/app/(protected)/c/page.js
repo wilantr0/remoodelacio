@@ -1,63 +1,98 @@
-import CreateClass from "@components/CreateClass"
-import { cookies } from "next/headers";
+"use client";
 
-export default async function Classes () {
-  const token = await cookies().get('userCookie')?.value
-  console.log(token)
-  // Hacemos fetch de los datos en el servidor
-  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/clases`,
-    { method: 'GET',
-      headers:{
-        'Authorization': `Bearer ${token}`
+import { useEffect, useState } from 'react';
+import ClassCard from '@components/ClassCard'
+import Loading from '@components/Loading'
 
-  }});
 
-  console.log(res)
+export default function ClassroomPage() {
+  const [classes, setClasses] = useState([]);
+  const [classCode, setClassCode] = useState([]);
+  const [error, setError] = useState(null);
+  const [showJoin, setShowJoin] = useState(false)
 
-  // Asegúrate de manejar errores o una respuesta vacía
-  if (!res.ok) {
-    console.error("Error fetching classes");
-    return <div>Error al cargar las clases</div>;
-  }
+  const handleJoinClass = async () => {
+    const newClass = {
+      code: classCode
+    };
 
-  const clases = await res.json(); // Procesa la respuesta a JSON
-  //console.log(clases)
+    // Hacer el POST request a la API para crear la clase
+    const response = await fetch(`/api/clases/${classCode}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      credentials:'include',
+      body: JSON.stringify(newClass),
+    });
 
+    if (response.ok) {
+      setShowModal(false);
+    } else {
+      console.error("Error uniendo a la clase");
+    }
+  };
+
+  useEffect(() => {
+    const fetchClasses = async () => {
+      try {
+        const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/clases`, {
+          credentials: 'include',
+        });
+        if (!res.ok) throw new Error('Failed to load classes');
+
+        const data = await res.json();
+        setClasses(data);
+      } catch (err) {
+        setError(err.message);
+      }
+    };
+
+    fetchClasses();
+  }, []);
 
   return (
-    <div className='flex flex-col h-screen'>
-      <main className='flex-1 bg-background p-6'>
-        <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6'>
-          {clases.length ? (
-            clases.map((e) => {
-              return(
-                <a
-                  key={e.classroom_id}
-                  href={`/c/${e.classroom_id}`}
-                  className='rounded-lg border bg-card text-black decoration-transparent text-card-foreground shadow-lg'
-                  data-v0-t='card'
-                >
-                  <div className='p-6'>
-                    <div className='flex items-center justify-between'>
-                      <h3 className='text-lg font-bold'>{e.name}</h3>
-                    </div>
-                  </div>
-                  <div className='flex items-center p-6'>
-                    <button className='inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 border border-input bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2 w-full'>
-                      View Class
-                    </button>
-                  </div>
-                </a>
-              )
-          })
+    <div className="p-8">
+      <div className='flex flex-row items-center justify-between'>
+        <h1 className="text-2xl font-bold mb-6">Tus Clases</h1>
+        <button className='w-fit h-10 border-2 border-black rounded-full flex items-center gap-2 p-2 justify-center mr-2 font-semibold' onClick={() => setShowJoin(true)}>
+        Unirme a una clase
+        <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24"><path d="M24 10h-10v-10h-4v10h-10v4h10v10h4v-10h10z"/></svg>
+        </button>
+      </div>
+      {error ? (
+        <p className="text-red-500">Error: {error}</p>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          {classes.length > 0 ? (
+            classes.map((classroom) => (
+              <ClassCard key={classroom.classroom_id} classroom={classroom} />
+            ))
           ) : (
-            <div className='w-screen flex flex-col justify-center items-center gap-2'>
-              <h1>Aun no hay clases</h1>
-              <CreateClass /> {/* Renderiza el componente de cliente aquí */}
-            </div>
+            <Loading />
           )}
         </div>
-      </main>
+      )}
+      {showJoin?
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
+        <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
+            <label className='flex flex-col gap-2'>
+              Codigo de clase
+              <input 
+                type="text"
+                name="classCode" 
+                id="classCode" 
+                className='border-2 border-black rounded-md p-2'
+                onChange={(e) => setClassCode(e.target.value)}
+                />
+            </label>
+            <div className='flex flex-row gap-2'>
+              <button className='bg-blue-600 text-white rounded-md p-2 mt-2' onClick={handleJoinClass}>Unirme a la clase</button>
+              <button className='bg-red-600 text-white rounded-md p-2 mt-2' onClick={() => setShowJoin(false)}>Cancelar</button>
+            </div>
+        </div>
+      </div> :
+        ''}
     </div>
   );
 }

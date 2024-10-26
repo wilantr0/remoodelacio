@@ -1,16 +1,14 @@
 import ImageComparison from '@/components/CompareImages'
 import { Users, Calendar, BarChart3, Building2 } from 'lucide-react'
-import type { Metadata } from 'next'
 import './globals.css'
+import NavBar from '@/components/NavBar'
 
-export const metadata: Metadata = {
-  title: 'Main',
-}
 
 
 export default function NotLoggedPage () {
   return (
     <div className='flex flex-col min-h-screen '>
+      <NavBar />
       <main className='flex-1'>
         <section className='w-full h-full py-12 md:py-24 lg:py-32 xl:py-48 bg-gradient-to-r from-blue-600 to-indigo-600'>
           <div className='container px-4 md:px-6'>
