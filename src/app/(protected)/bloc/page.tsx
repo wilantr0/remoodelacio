@@ -1,5 +1,5 @@
 export default function Bloc() {
   return(
-    <h1>Hola Putas</h1>
+    <h1>NO HI HA RES ENCARA</h1>
   )
 }

@@ -39,11 +39,11 @@ const Contact = () => {
   return (
     <section className="py-10 bg-blue-50">
       <div className="container mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-10 text-blue-700">Contáctanos</h1>
+        <h1 className="text-4xl font-bold text-center mb-10 text-blue-700">Contacta'ns</h1>
         
         <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-blue-100 p-8 rounded-lg shadow-lg">
           <div className="mb-4">
-            <label htmlFor="name" className="block text-blue-800 font-semibold mb-2">Nombre</label>
+            <label htmlFor="name" className="block text-blue-800 font-semibold mb-2">Nom</label>
             <input
               type="text"
               name="name"
@@ -56,7 +56,7 @@ const Contact = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="email" className="block text-blue-800 font-semibold mb-2">Email</label>
+            <label htmlFor="email" className="block text-blue-800 font-semibold mb-2">E-mail</label>
             <input
               type="email"
               name="email"
@@ -69,7 +69,7 @@ const Contact = () => {
           </div>
 
           <div className="mb-4">
-            <label htmlFor="message" className="block text-blue-800 font-semibold mb-2">Mensaje</label>
+            <label htmlFor="message" className="block text-blue-800 font-semibold mb-2">Missatge</label>
             <textarea
               name="message"
               id="message"
@@ -88,8 +88,8 @@ const Contact = () => {
             Enviar
           </button>
 
-          {status === 'success' && <p className="mt-4 text-green-600">¡Mensaje enviado con éxito!</p>}
-          {status === 'error' && <p className="mt-4 text-red-600">Error al enviar el mensaje. Inténtalo nuevamente.</p>}
+          {status === 'success' && <p className="mt-4 text-green-600">Missatge enviat amb èxit</p>}
+          {status === 'error' && <p className="mt-4 text-red-600">Error a l'enviar el missatge. Intenti-ho de nou.</p>}
         </form>
       </div>
     </section>
