@@ -87,8 +87,8 @@ export default function ClassroomPage() {
                 />
             </label>
             <div className='flex flex-row gap-2'>
-              <button className='bg-blue-600 text-white rounded-md p-2 mt-2' onClick={handleJoinClass}>Unirme a la clase</button>
-              <button className='bg-red-600 text-white rounded-md p-2 mt-2' onClick={() => setShowJoin(false)}>Cancelar</button>
+              <button className='bg-blue-600 text-white rounded-md p-2 mt-2' onClick={handleJoinClass}>Unir-me a la clase</button>
+              <button className='bg-red-600 text-white rounded-md p-2 mt-2' onClick={() => setShowJoin(false)}>Cancel·lar</button>
             </div>
         </div>
       </div> :

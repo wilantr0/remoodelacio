@@ -8,7 +8,7 @@ export default async function AsistenciaPage() {
 
 	return (
     <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Control de Asistencia</h1>
+      <h1 className="text-2xl font-bold mb-4">Control d'Asistència</h1>
 
       <div className="relative overflow-x-auto shadow-md sm:rounded-lg">
         <div className="pb-4 bg-white dark:bg-gray-900">

@@ -25,6 +25,6 @@ export default function Clase ({params}) {
   console.log(assignaments)
 
   return (
-      <h1>hola</h1>
+      <h1>Hola</h1>
   )
 }

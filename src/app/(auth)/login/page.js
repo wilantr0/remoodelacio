@@ -47,15 +47,15 @@ export default function LoginPage() {
     <div className="min-h-full bg-gradient-to-br from-black to-blue-600 flex items-center justify-center p-4 absolute w-screen">
       <Card className="w-full max-w-md bg-white shadow-xl">
         <CardHeader className="space-y-1">
-          <CardTitle className="text-3xl font-bold tracking-tight text-blue-600">Iniciar sesión</CardTitle>
+          <CardTitle className="text-3xl font-bold tracking-tight text-blue-600">Iniciar sessió</CardTitle>
           <CardDescription className="text-gray-500">
-            Ingresa tus credenciales para acceder a tu cuenta
+            Ingressa les teves dades per a accedir al teu compte
           </CardDescription>
         </CardHeader>
         <form onSubmit={handleSubmit}>
           <CardContent className="space-y-4">
             <div className="space-y-2">
-              <Label className="text-black" htmlFor="email">Correo electrónico</Label>
+              <Label className="text-black" htmlFor="email">Correu electrònic</Label>
               <Input
                 className="text-black"
                 id="email"
@@ -67,7 +67,7 @@ export default function LoginPage() {
               />
             </div>
             <div className="space-y-2">
-              <Label className="text-black" htmlFor="password">Contraseña</Label>
+              <Label className="text-black" htmlFor="password">Contrasenya</Label>
               <Input
                 className="text-black"
                 id="password"
@@ -84,7 +84,7 @@ export default function LoginPage() {
           </CardContent>
           <CardFooter>
             <Button variant="default" size="full" className="py-2">
-              Iniciar sesión
+              Iniciar sessió
             </Button>
           </CardFooter>
         </form>

@@ -3,7 +3,7 @@ import UserServer from '@components/UserServer';
 
 export default function Page() {
   return (
-    <Suspense fallback={<div>Cargando...</div>}>
+    <Suspense fallback={<div>Carregant...</div>}>
       <UserServer />
     </Suspense>
   );

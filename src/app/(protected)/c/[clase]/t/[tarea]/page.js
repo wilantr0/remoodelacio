@@ -10,7 +10,7 @@ export default function Tarea () {
 
   return (
     <section>
-      <h1>Tarea</h1>
+      <h1>Tasques</h1>
     </section>
   )
 }
