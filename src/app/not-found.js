@@ -6,7 +6,6 @@ export default function Error () {
     <body>
       <div className="flex justify-center items-center h-screen bg-black">
         <img src="https://http.cat/404" alt="errorCat" />
-        
       </div>
     </body>
     </html>
