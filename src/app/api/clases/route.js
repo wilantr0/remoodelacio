@@ -74,3 +74,43 @@ export async function POST(req) {
     return NextResponse.json({ error: "Error al crear la clase" }, { status: 500 });
   }
 }
+
+export async function DELETE(req) {
+  const token = cookies().get("cookieUser")?.value;
+
+  if (!token) {
+    return NextResponse.json({ error: "No token provided" }, { status: 401 });
+  }
+
+  try {
+    // Verificamos el token para obtener el ID del usuario
+    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
+    const userId = decodedToken?.user;
+
+    const { id } = await req.json();
+
+    // Verificar si el usuario es el creador de la clase
+    const classroom = await prisma.classroom.findUnique({
+      where: {
+        id: id,
+        created_by_id: userId
+      }
+    });
+
+    if (!classroom) {
+      return NextResponse.json({ error: "No tienes permiso para eliminar esta clase" }, { status: 403 });
+    }
+
+    // Eliminar la clase
+    await prisma.classroom.delete({
+      where: {
+        id: id
+      }
+    });
+
+    return NextResponse.json({ message: "Clase eliminada correctamente" });
+  } catch (error) {
+    console.log(error);
+    return NextResponse.json({ error: "Error al eliminar la clase" }, { status: 500 });
+  }
+}
