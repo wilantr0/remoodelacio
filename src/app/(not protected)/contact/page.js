@@ -39,7 +39,7 @@ const Contact = () => {
   return (
     <section className="py-10 bg-blue-50">
       <div className="container mx-auto">
-        <h1 className="text-4xl font-bold text-center mb-10 text-blue-700">Contacta'ns</h1>
+        <h1 className="text-4xl font-bold text-center mb-10 text-blue-700">Contacta&#39;ns</h1>
         
         <form onSubmit={handleSubmit} className="max-w-md mx-auto bg-blue-100 p-8 rounded-lg shadow-lg">
           <div className="mb-4">
@@ -89,7 +89,7 @@ const Contact = () => {
           </button>
 
           {status === 'success' && <p className="mt-4 text-green-600">Missatge enviat amb èxit</p>}
-          {status === 'error' && <p className="mt-4 text-red-600">Error a l'enviar el missatge. Intenti-ho de nou.</p>}
+          {status === 'error' && <p className="mt-4 text-red-600">Error a l&#39;enviar el missatge. Intenti-ho de nou.</p>}
         </form>
       </div>
     </section>

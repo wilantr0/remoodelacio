@@ -44,12 +44,12 @@ export default async function LoggedPage () {
                 <a href='/calendar' className='p-4 border-[1.5px] border-neutral-800 rounded-md shadow-inner decoration-transparent text-black flex flex-col items-center justify-center'>
                   <Calendar className='h-12 w-12 mb-4 text-blue-600' />
                   <h3 className='text-lg font-bold mb-2'>Calendari</h3>
-                  <p className='text-sm text-neutral-600 text-center'>Afegeix i visualitza recordatoris d'exàmenes i tasques</p>
+                  <p className='text-sm text-neutral-600 text-center'>Afegeix i visualitza recordatoris d&#39;exàmenes i tasques</p>
                 </a>
                 <a href='/assistance' className='p-4 border-[1.5px] border-neutral-800 rounded-md shadow-inner decoration-transparent text-black flex flex-col items-center justify-center'>
                   <CheckCircle className='h-12 w-12 mb-4 text-blue-600' />
                   <h3 className='text-lg font-bold mb-2'>Asistència</h3>
-                  <p className='text-sm text-neutral-600 text-center'>Controla l'asistència a les teves classes</p>
+                  <p className='text-sm text-neutral-600 text-center'>Controla l&#39;asistència a les teves classes</p>
                 </a>
                 <a href='/bloc' className='p-4 border-[1.5px] border-neutral-800 rounded-md shadow-inner decoration-transparent text-black flex flex-col items-center justify-center'>
                   <Notebook className='h-12 w-12 mb-4 text-blue-600' />

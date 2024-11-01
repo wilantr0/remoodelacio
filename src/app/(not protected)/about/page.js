@@ -8,21 +8,21 @@ export default function About () {
           <div className="bg-blue-300 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-blue-800">¿Quiénes Somos?</h2>
             <p className="text-blue-900">
-              Som un equip de desenvolupadors apassionats amb la missió de millorar l'accessibilitat i l'eficiència en l'educació a través de solucions tecnològiques innovadores.
+              Som un equip de desenvolupadors apassionats amb la missió de millorar l&#39;accessibilitat i l&#39;eficiència en l&#39;educació a través de solucions tecnològiques innovadores.
             </p>
           </div>
           
           <div className="bg-blue-100 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-blue-800">Nuestra Misión</h2>
             <p className="text-blue-900">
-            Crear eines que permetin als estudiants i professors maximitzar el seu potencial i fer l'aprenentatge més accessible per a tothom.
+            Crear eines que permetin als estudiants i professors maximitzar el seu potencial i fer l&#39;aprenentatge més accessible per a tothom.
             </p>
           </div>
           
           <div className="bg-blue-300 p-6 rounded-lg shadow-lg">
             <h2 className="text-2xl font-bold mb-4 text-blue-800">Nuestro Impacto</h2>
             <p className="text-blue-900">
-              A través de les nostres plataformes, hem facilitat l'aprenentatge a milers d'estudiants, permetent-los un accés més fàcil als recursos educatius.
+              A través de les nostres plataformes, hem facilitat l&#39;aprenentatge a milers d&#39;estudiants, permetent-los un accés més fàcil als recursos educatius.
             </p>
           </div>
         </div>

@@ -5,17 +5,18 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from "@/components/ui/card";
 import { useRouter } from 'next/navigation';
+import { EyeIcon, EyeOffIcon } from "lucide-react";
 
 export default function LoginPage() {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
-  const router = useRouter()
+  const [showPassword, setShowPassword] = useState(false); // Estado para mostrar/ocultar la contraseña
+  const router = useRouter();
 
   const handleSubmit = async (e) => {
-    e.preventDefault(); // Evitar la redirección por defecto
+    e.preventDefault();
 
-    // Crear los datos del formulario
     const formData = new FormData();
     formData.append('email', email);
     formData.append('password', password);
@@ -29,17 +30,15 @@ export default function LoginPage() {
       const data = await res.json();
 
       if (res.ok) {
-        // Login exitoso, maneja la respuesta aquí, por ejemplo, redirigir al dashboard
-        localStorage.setItem('token', data.token)
+        localStorage.setItem('token', data.token);
         console.log('Login exitoso', data);
-        router.push('/dashboard')
+        router.push('/dashboard');
       } else {
-        // Mostrar error si hay algún problema con la autenticación
         setErrorMessage(data.message);
       }
     } catch (error) {
       console.error('Error en el servidor', error);
-      setErrorMessage(error);
+      setErrorMessage(error.message || 'Error de servidor');
     }
   };
 
@@ -63,29 +62,39 @@ export default function LoginPage() {
                 type="email"
                 placeholder="tu@email.com"
                 value={email}
-                onChange={(e) => setEmail(e.target.value)} // Actualiza el estado
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
             <div className="space-y-2">
               <Label className="text-black" htmlFor="password">Contrasenya</Label>
-              <Input
-                className="text-black"
-                id="password"
-                name="password"
-                type="password"
-                placeholder="••••••••"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)} // Actualiza el estado
-              />
+              <div className="relative">
+                <Input
+                  className="text-black pr-10" // Añadimos espacio para el botón de mostrar/ocultar
+                  id="password"
+                  name="password"
+                  type={showPassword ? "text" : "password"}
+                  placeholder="••••••••"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+                <button
+                  type="button"
+                  className="absolute inset-y-0 right-0 flex items-center pr-3 text-gray-500"
+                  onClick={() => setShowPassword(!showPassword)}
+                >
+                  {showPassword ? <EyeOffIcon /> : <EyeIcon />}
+                </button>
+              </div>
             </div>
             {errorMessage && (
               <p className="text-red-500">{errorMessage}</p>
             )}
           </CardContent>
-          <CardFooter>
-            <Button variant="default" size="full" className="py-2">
+          <CardFooter className='flex flex-col gap-2'>
+            <Button type="submit" variant="default" size="full" className="py-2">
               Iniciar sessió
             </Button>
+            <div className='text-black'>Encara no tens compte? <a className='text-blue-600 decoration-blue-600 underline' href="/signup">Registra&#39;t</a></div>
           </CardFooter>
         </form>
       </Card>
