@@ -36,7 +36,7 @@ export default function CreateClass() {
     <>
       {/* Botón para abrir el pop-up */}
       <button
-        className="bg-blue-500 text-white font-bold py-2 px-4 rounded hover:bg-blue-600"
+        className="bg-blue-600 text-white font-bold py-2 px-4 rounded hover:text-black"
         onClick={() => setShowModal(true)}
       >
         Crear Clase

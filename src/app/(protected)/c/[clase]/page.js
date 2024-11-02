@@ -71,14 +71,14 @@ export default function Classe({ params }) {
 
       {/* Contingut de cada pestaña */}
       {activeTab === "general" && (
-        userRole === "alumne" ? (
+        userRole === "alumn" ? (
           <GeneralViewAlumne assignments={assignments} materials={materials} />
         ) : (
           <GeneralViewProfessor assignments={assignments} materials={materials} clase={params.clase} />
         )
       )}
       {activeTab === "tasques" && (
-        userRole === "alumne" ? (
+        userRole === "alumn" ? (
           <TasquesViewAlumne assignments={sortedAssignments} />
         ) : (
           <TasquesViewProfessor assignments={sortedAssignments} />

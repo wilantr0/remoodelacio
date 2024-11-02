@@ -54,6 +54,7 @@ export default function UserProfile({ user }) {
             </div>
             <h2 className="mt-2 text-xl font-semibold text-gray-800">{userData?.name}</h2>
             <p className="text-gray-600">{userData?.email}</p>
+            <p className="text-gray-600">{userData?.role === 'alumn'?'Alumne':userData?.role === 'professor'?'Professor':'Superusuari'}</p>
           </div>
           <div className="md:w-2/3 p-4">
             <div className="mt-4 flex justify-end space-x-3">

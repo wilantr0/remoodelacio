@@ -1,6 +1,9 @@
 // /app/api/clases/[clase]/students/route.js
 import { PrismaClient } from '@prisma/client';
+import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
+import { decodeToken } from '@/lib/password';
+
 
 const prisma = new PrismaClient();
 
@@ -18,9 +21,18 @@ export async function GET(req, { params }) {
 }
 
 // Agregar un nuevo estudiante a una clase específica
-export async function POST(req, { params }) {
+export async function POST(req) {
   const body = await req.json();
-  const { userId } = body;
+  console.log(body)
+  const classId = body.code;
+  const userToken = cookies().get('cookieUser')?.value;
+  const userId = decodeToken(userToken).user;
+
+
+
+  if (!classId) {
+    return NextResponse.json({ message: 'El ID de la clase es requerido.' }, { status: 400 });
+  }
 
   if (!userId) {
     return NextResponse.json({ message: 'El ID del usuario es requerido.' }, { status: 400 });
@@ -29,8 +41,17 @@ export async function POST(req, { params }) {
   try {
     const newClassroomUser = await prisma.classroomUser.create({
       data: {
-        user_id: parseInt(userId),
-        classroom_id: parseInt(params.clase),
+        role: "alumne",
+        classroom: {
+          connect: {
+            classroom_id: parseInt(classId) // o el valor correcte de `classroom_id` en format número
+          },
+        },
+        user: {
+          connect: {
+            id: userId // id de l'usuari
+          },
+        },
       },
     });
     return NextResponse.json(newClassroomUser, { status: 201 });

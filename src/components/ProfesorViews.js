@@ -79,8 +79,8 @@ export function AlumnesView({ students }) {
       <h2 className="text-2xl font-semibold mt-4">Llista d&#39;Alumnes</h2>
       <div className="mt-4">
         {students.map((student) => (
-          <div key={student.id} className="border p-4 mb-4">
-            <p>{student.name}</p>
+          <div key={student.user.id} className="border p-4 mb-4">
+            <p>{student.user.name}</p>
           </div>
         ))}
       </div>
