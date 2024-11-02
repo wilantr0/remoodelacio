@@ -1,4 +1,10 @@
 import { cookies } from "next/headers";
+import type { Metadata } from 'next'
+
+export const metadata: Metadata = {
+  title: 'Asistència',
+}
+
 
 // Componente principal
 export default async function AsistenciaPage() {

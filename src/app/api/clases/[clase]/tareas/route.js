@@ -1,73 +1,39 @@
-import { PrismaClient } from "@prisma/client";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
-import jwt from 'jsonwebtoken';
+// /app/api/clases/[clase]/tareas/route.js
+import { PrismaClient } from '@prisma/client';
+import { NextResponse } from 'next/server';
 
 const prisma = new PrismaClient();
 
-export async function GET(req) {
-  const token = cookies().get("cookieUser")?.value;
-
-  if (!token) {
-    return NextResponse.json({ error: "No token provided" }, { status: 401 });
-  }
-
+export async function GET(req, { params }) {
   try {
-    // Verificamos el token para obtener el ID del usuario
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decodedToken?.user;
-
-    const { clase } = req.nextUrl.searchParams;
-
-    // Buscar tareas en la clase
-    const tasks = await prisma.task.findMany({
-      where: {
-        classroomId: parseInt(clase),
-        created_by_id: userId
-      },
-      include: {
-        classroom: true,
-        created_by: true
-      }
+    const assignments = await prisma.assignment.findMany({
+      where: { classroom_id: parseInt(params.clase) },
     });
-
-    return NextResponse.json(tasks);
+    return NextResponse.json(assignments, { status: 200 });
   } catch (error) {
-    console.log(error);
-    return NextResponse.json({ error: "Token inválido o error al obtener tareas" }, { status: 403 });
+    return NextResponse.json({ message: 'Error al obtener las tareas: ' + error.message }, { status: 500 });
   }
 }
 
-export async function POST(req) {
-  const token = cookies().get("cookieUser")?.value;
+export async function POST(req, { params }) {
+  const body = await req.json();
+  const { name, description, dueDate } = body;
 
-  if (!token) {
-    return NextResponse.json({ error: "No token provided" }, { status: 401 });
+  if (!name || !description) {
+    return NextResponse.json({ message: 'Todos los campos son requeridos.' }, { status: 400 });
   }
 
   try {
-    // Verificamos el token para obtener el ID del usuario
-    const decodedToken = jwt.verify(token, process.env.JWT_SECRET);
-    const userId = decodedToken?.user;
-
-    const { clase } = req.nextUrl.searchParams;
-    const body = await req.json();
-    const { name, description } = body;
-
-    // Crear una nueva tarea
-    const newTask = await prisma.task.create({
+    const newAssignment = await prisma.assignment.create({
       data: {
-        name: name,
-        description: description,
-        classroomId: parseInt(clase),
-        created_by_id: userId
-      }
+        title: name,
+        description,
+        due_date: dueDate ? new Date(dueDate) : null,
+        classroom_id: parseInt(params.clase),
+      },
     });
-
-    return NextResponse.json(newTask)
+    return NextResponse.json(newAssignment, { status: 201 });
+  } catch (error) {
+    return NextResponse.json({ message: 'Error al crear la tarea: ' + error.message }, { status: 500 });
   }
-
-    catch(e){
-      return NextResponse.json({ error: "Error al crear la tarea" }, { status: 500 });
-    }
-  }
+}

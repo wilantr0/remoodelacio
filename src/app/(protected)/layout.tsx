@@ -18,6 +18,7 @@ export default function ProtectedLayout({
     <div>
         <LoggedNavBar />
         <main>{children}</main>
+
     </div>
 
   );

@@ -1,6 +1,7 @@
 'use client'
 import { useState } from 'react'
-import PlansCard from '../../../components/PlansCard.js'
+import PlansCard from '@/components/PlansCard.js'
+import Head from 'next/head'
 
 
 export default function Planes () {
@@ -8,6 +9,9 @@ export default function Planes () {
   return (
 
       <div className='flex flex-col justify-center gap-3'>
+        <Head>
+          <title>Plans</title>
+        </Head>
         <h1 className='text-center p-4 mb-2 text-5xl'>Plans</h1>
 
         <div className='flex flex-row justify-center mb-2'>

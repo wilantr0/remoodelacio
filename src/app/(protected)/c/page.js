@@ -4,7 +4,6 @@ import { useEffect, useState } from 'react';
 import ClassCard from '@components/ClassCard'
 import Loading from '@components/Loading'
 
-
 export default function ClassroomPage() {
   const [classes, setClasses] = useState([]);
   const [classCode, setClassCode] = useState([]);
