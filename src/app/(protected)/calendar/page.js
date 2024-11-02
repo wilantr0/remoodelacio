@@ -6,10 +6,6 @@ import {
   Plus
 } from 'lucide-react'
 
-export const metadata = {
-  title: 'Agenda',
-}
-
 
 export default function Component () {
   const [currentDate, setCurrentDate] = useState(new Date())
