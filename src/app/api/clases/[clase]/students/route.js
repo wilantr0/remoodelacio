@@ -40,7 +40,7 @@ export async function POST(req, { params }) {
 }
 
 // Actualizar el rol o información en la clase para un estudiante específico
-export async function PUT(req, { params }) {
+export async function PUT(req) {
   const body = await req.json();
   const { classroomUserId, role } = body;
 
@@ -62,7 +62,7 @@ export async function PUT(req, { params }) {
 }
 
 // Eliminar un estudiante de una clase específica
-export async function DELETE(req, { params }) {
+export async function DELETE(req) {
   const { classroomUserId } = await req.json();
 
   if (!classroomUserId) {
