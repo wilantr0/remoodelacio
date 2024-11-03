@@ -8,21 +8,19 @@ import jwt from 'jsonwebtoken';
 const prisma = new PrismaClient();
 
 export async function GET(req, context) {
-  const classroomId = context.params.id
+  const classroomId = context.params.clase
+  console.log(classroomId)
 
   try {
 
     // Buscar clases en las que el usuario es profesor o estudiante
-    const assignaments = await prisma.assignment.findMany({
+    const classData = await prisma.classroom.findUnique({
       where: {
-        classroom_id: classroomId
-      },
-      include: {
-        classroom:true,
+        classroom_id: parseInt(classroomId)
       }
     });
 
-    return NextResponse.json(assignaments);
+    return NextResponse.json(classData);
   } catch (error) {
     console.log(error);
     return NextResponse.json({ error: "Token inválido o error al obtener clases" }, { status: 403 });

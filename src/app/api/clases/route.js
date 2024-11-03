@@ -68,6 +68,15 @@ export async function POST(req) {
       }
     });
 
+    await prisma.classroomUser.create({
+      data: {
+        classroom_id: newClassroom.classroom_id,
+        userId: userId,
+        role: 'professor'
+      }
+    });
+
+
     return NextResponse.json(newClassroom);
   } catch (error) {
     console.log(error);

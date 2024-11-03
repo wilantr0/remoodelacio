@@ -17,6 +17,9 @@ export async function GET() {
   const user = await prisma.user.findUnique({
     where: {
       id: userId
+    },
+    include: {
+      classroomUsers: true
     }
   })
 
