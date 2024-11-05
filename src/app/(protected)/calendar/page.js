@@ -1,11 +1,11 @@
-'use client'
+"use client"
+
 import { useState } from 'react'
 import {
   ChevronLeft,
   ChevronRight,
   Plus
 } from 'lucide-react'
-
 
 export default function Component () {
   const [currentDate, setCurrentDate] = useState(new Date())
@@ -56,6 +56,7 @@ export default function Component () {
 
   return (
     <div className='flex flex-col h-screen bg-background text-foreground'>
+      {/* Header */}
 
       <div className='flex flex-1 overflow-hidden'>
         {/* Sidebar */}
@@ -98,7 +99,7 @@ export default function Component () {
 
           {/* Calendar List */}
           <div>
-            <h2 className='font-semibold mb-2'>Calendaris</h2>
+            <h2 className='font-semibold mb-2'>My calendars</h2>
             <ul>
               {['Personal', 'Work', 'Family'].map(calendar => (
                 <li key={calendar} className='flex items-center mb-2'>
@@ -115,7 +116,7 @@ export default function Component () {
           {/* Toolbar */}
           <div className='flex justify-between items-center p-4 border-b'>
             <div className='flex items-center space-x-4'>
-              <button variant='ghost' onClick={() => setCurrentDate(new Date())}>Avui</button>
+              <button variant='ghost' onClick={() => setCurrentDate(new Date())}>Today</button>
               <button variant='ghost' size='icon'>
                 <ChevronLeft className='h-5 w-5' onClick={handlePrevMonth} />
               </button>

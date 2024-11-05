@@ -1,4 +1,4 @@
-import EntregarTarea from "@components/EntregarTarea";
+import Link from "next/link";
 
 export function GeneralViewAlumne({ assignments, materials }) {
   return (
@@ -17,22 +17,32 @@ export function GeneralViewAlumne({ assignments, materials }) {
   );
 }
 
-export function TasquesViewAlumne({ assignments }) {
+
+export function TasquesViewAlumne({ assignments, classId }) {
   return (
     <>
       <h2 className="text-2xl font-semibold mt-4">Tasques</h2>
-      <div className="mt-4">
+      <div className="mt-4 space-y-4">
         {assignments.length > 0 ? (
           assignments.map((assignment) => (
-            <EntregarTarea key={assignment.id} assignment={assignment} />
+            <div key={assignment.assignment_id} className="p-4 border rounded-lg hover:bg-gray-100">
+              <Link href={`/c/${classId}/t/${assignment.assignment_id}`} className="text-blue-500 font-medium text-lg hover:underline">
+                
+                  {assignment.title}
+              </Link>
+              {assignment.due_date && (
+                <p className="text-sm text-gray-500">Due: {new Date(assignment.due_date).toLocaleDateString()}</p>
+              )}
+            </div>
           ))
         ) : (
-          <p>No tens tasques assignades.</p>
+          <p className="text-gray-500">No tens tasques assignades.</p>
         )}
       </div>
     </>
   );
 }
+
 
 export function NotesView({ assignments }) {
   return (

@@ -3,6 +3,8 @@ import { hashPassword } from '@lib/password';
 import { PrismaClient } from '@prisma/client'
 import jwt from "jsonwebtoken";
 import { cookies } from 'next/headers';
+import generateProfilePicture from '@lib/profilePhoto';
+
 
 const prisma = new PrismaClient()
 
@@ -21,13 +23,17 @@ export async function POST(req) {
     // Hashear la contraseña
     const hashedPassword = await hashPassword(password);
 
+    const photoImage = generateProfilePicture(name);
+
+
     // Inserción de los datos en la base de datos
       const query = await prisma.user.create({
         data:{
           name,
           email,
           password: hashedPassword,
-          role
+          role,
+          image: photoImage
         }
       })
 

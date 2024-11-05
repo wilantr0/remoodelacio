@@ -17,6 +17,9 @@ export async function GET(req, context) {
     const classData = await prisma.classroom.findUnique({
       where: {
         classroom_id: parseInt(classroomId)
+      },
+      include:{
+        created_by: true
       }
     });
 

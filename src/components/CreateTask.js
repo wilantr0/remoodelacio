@@ -1,7 +1,7 @@
 "use client";
 import { useState } from "react";
 
-export default function TaskForm({ classId }) {
+export default function TaskForm({ classId, onSubmitSuccess }) {
   const [name, setName] = useState("");
   const [description, setDescription] = useState("");
   const [url, setUrl] = useState("");
@@ -29,6 +29,11 @@ export default function TaskForm({ classId }) {
         headers: { "Content-Type": "application/json" },
         body,
       });
+
+      if(res.ok){
+        const info = await res.json()
+        onSubmitSuccess(info)
+      }
 
       if (!res.ok) {
         const errorData = await res.json();

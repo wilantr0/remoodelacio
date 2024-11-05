@@ -1,8 +1,26 @@
 'use client'
 import Image from 'next/image'
+import { useEffect, useState } from 'react'
 
 
 export default function LoggedNavBar () {
+
+  const [imageProfile, setImageProfile] = useState(null)
+
+
+  useEffect(() => {
+    async function photoInfo() {
+    
+      const imageRes = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/user`)
+      const imageInfo = await imageRes.json()
+      setImageProfile(imageInfo.image || null)
+    }
+
+    photoInfo()
+
+
+  }, [])
+
   return (
     <header className='px-4 lg:px-6 h-20 flex items-center justify-between border-b'>
       <div className='container mx-auto flex flex-row justify-between items-center'>
@@ -20,8 +38,8 @@ export default function LoggedNavBar () {
             <button className=' rounded-full flex items-center justify-center'>
               <img
                 alt='user icon'
-                src='/placeholder.png'
-                className='w-12 h-12'
+                src={imageProfile || '/placeholder.png'}
+                className='w-12 h-12 rounded-full'
               />
             </button>
           </a>

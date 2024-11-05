@@ -12,6 +12,7 @@ export default function Classe({ params }) {
   const [activeTab, setActiveTab] = useState("general");
   const [isLoading, setIsLoading] = useState(true);
 
+
   useEffect(() => {
     const fetchClassData = async () => {
       try {
@@ -60,15 +61,34 @@ export default function Classe({ params }) {
 
 
   return (
-   
 
       <div className="p-8 flex flex-col justify-start h-full">
         {/* Banner de la clase */}
-        <div className="grid grid-cols-1 gap-2">
-          <div className="relative flex flex-col justify-end items-start bg-cover bg-center p-8 h-48 pb-0 rounded-lg text-white shadow-[inset_33px_-60px_65px_40px_rgba(0,_0,_0,_0.5)]" style={{ backgroundImage: 'url("/banner.jpg")' }}>
+        <div className="grid grid-cols-5 gap-2">
+          <div className="relative flex col-span-4 flex-col justify-end items-start bg-cover bg-center p-8 h-48 pb-0 rounded-lg text-white shadow-[inset_33px_-60px_65px_40px_rgba(0,_0,_0,_0.5)]" style={{ backgroundImage: 'url("/banner.jpg")' }}>
             <h1 className="text-4xl font-bold">{classInfo.name || "Clase sin nombre"}</h1>
             <p className="text-lg mt-2">{classInfo.description || "Profesor"}</p>
           </div>
+
+          {
+            userRole==='alumne'? 
+            <div className="flex flex-col items-center gap-2">
+              <img src={classInfo.created_by.image || "/placeholder.png"} alt="" className="w-20 h-20 rounded-full mb-2" />
+              <section className="text-center ">
+                <p>
+                  {classInfo.created_by.name}
+                </p>
+                <p>
+                  {classInfo.created_by.email}
+                </p>
+              </section>
+            </div>
+            : 
+            <div className="border-2 border-black rounded-md h-full">
+              <p>Codi de la classe:</p>
+              {params.clase}
+            </div>
+          }
         </div>
         
 
@@ -89,15 +109,16 @@ export default function Classe({ params }) {
         )}
         {activeTab === "tasques" && (
           userRole === "alumne" ? (
-            <TasquesViewAlumne assignments={sortedAssignments} />
+            <TasquesViewAlumne assignments={sortedAssignments} classId={params.clase} />
           ) : (
-            <TasquesViewProfessor assignments={sortedAssignments} />
+            <TasquesViewProfessor assignments={sortedAssignments} classId={params.clase} />
           )
         )}
         {activeTab === "alumnes" && (
           userRole === "professor" || userRole === "super" ? <AlumnesView students={students} /> : <NotesView assignments={assignments} />
         )}
       </div>
+      
 
 
   );

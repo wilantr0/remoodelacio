@@ -34,7 +34,9 @@
     "src/app/api/ping/route.js",
     "src/lib/database.js",
     "src/app/api/signup/route.js",
-    "src/app/api/login/route.js"
+    "src/app/api/login/route.js",
+    "src/app/(protected)/bloc/page.js",
+    "src/components/Calendar.js"
   ],
   "exclude": ["node_modules"]
 }

@@ -16,7 +16,6 @@ model User {
   image             String?
   createdAt         DateTime            @default(now())
   updatedAt         DateTime            @default(now()) @updatedAt
-  accounts          Account[]
   announcements     Announcement[]
   materials         ClassroomMaterial[]
   classroomUsers    ClassroomUser[]
@@ -25,37 +24,9 @@ model User {
   grades            Grade[]
   notifications     Notification[]
   submissions       Submission[]        @relation("StudentSubmissions")
+  attendances       Attendance[]
 
   @@map("users")
-}
-
-model Account {
-  userId            String
-  type              String
-  provider          String
-  providerAccountId String
-  refresh_token     String?
-  access_token      String?
-  expires_at        Int?
-  token_type        String?
-  scope             String?
-  id_token          String?
-  session_state     String?
-  createdAt         DateTime @default(now())
-  updatedAt         DateTime @default(now()) @updatedAt
-  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@id([provider, providerAccountId])
-  @@map("accounts")
-}
-
-model VerificationToken {
-  identifier String
-  token      String
-  expires    DateTime
-
-  @@id([identifier, token])
-  @@map("verification_tokens")
 }
 
 model Classroom {
@@ -177,6 +148,24 @@ model Notification {
   user            User     @relation(fields: [userId], references: [id])
 
   @@map("notifications")
+}
+
+model Attendance {
+  attendance_id String           @id @default(uuid())
+  userId        String
+  date          DateTime
+  status        AttendanceStatus @default(PRESENT) // Estado de la asistencia
+  observation   String? // Observaciones de comportamiento, si aplica
+  user          User             @relation(fields: [userId], references: [id])
+
+  @@index([userId, date])
+  @@map("attendances")
+}
+
+enum AttendanceStatus {
+  PRESENT
+  ABSENT
+  LATE
 }
 
 enum Role {

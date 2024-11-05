@@ -12,7 +12,7 @@ export default function EntregarTarea ({ docs, isAssigned }) {
         return (
           <a
             key={e}
-            href={e.url}
+            href={e.id}
             target='_blank'
             rel='noopener noreferrer'
             class='decoration-transparent text-black w-full'
