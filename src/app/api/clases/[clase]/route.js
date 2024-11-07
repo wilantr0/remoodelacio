@@ -19,7 +19,9 @@ export async function GET(req, context) {
         classroom_id: parseInt(classroomId)
       },
       include:{
-        created_by: true
+        created_by: true,
+        users: true,
+        assignments: true
       }
     });
 

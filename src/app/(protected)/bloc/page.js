@@ -6,31 +6,27 @@ import { Label } from "@components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select"
 import { User, Book, GraduationCap } from 'lucide-react'
 
-// Componente principal
 export default function BlocCalificaciones() {
-  const [vistaProfesor, setVistaProfesor] = useState(true)
-  const [claseSeleccionada, setClaseSeleccionada] = useState(null)
-  const [user, setUser] = useState(undefined)
-  const [clases, setClases] = useState([])
-  const [alumnos, setAlumnos] = useState([])
+  const [vistaProfesor, setVistaProfesor] = useState(true);
+  const [claseSeleccionada, setClaseSeleccionada] = useState(null);
+  const [user, setUser] = useState(undefined);
+  const [clases, setClases] = useState([]);
+  const [alumnos, setAlumnos] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Obtén datos del usuario
-        const userData = await fetchUserData();
+        const userData = await fetchUserData(claseSeleccionada);
         setUser(userData);
-        setVistaProfesor(userData.role === 'professor');
+        setVistaProfesor(userData.role === 'professor' || userData.role === 'super');
 
-        // Obtén la lista de clases
         const classesRes = await fetch('/api/clases');
         const classesData = await classesRes.json();
         setClases(classesData);
-        setClaseSeleccionada(classesData[0]?.id || null);
+        setClaseSeleccionada(classesData[0]?.classroom_id || null);
 
-        // Obtén la lista de alumnos de la clase seleccionada
         if (claseSeleccionada) {
-          const studentsRes = await fetch(`/api/clases/${claseSeleccionada}/alumnos`);
+          const studentsRes = await fetch(`/api/clases/${claseSeleccionada}/students`);
           const studentsData = await studentsRes.json();
           setAlumnos(studentsData);
         }
@@ -42,6 +38,7 @@ export default function BlocCalificaciones() {
     fetchData();
   }, [claseSeleccionada]);
 
+  console.log(alumnos)
   return (
     <div>
       <div className="w-full mx-auto">
@@ -84,42 +81,52 @@ export default function BlocCalificaciones() {
   )
 }
 
-async function fetchUserData() {
+async function fetchUserData(claseSeleccionada) {
   const res = await fetch('/api/user', { credentials: 'include' });
   if (res.ok) {
-    return res.json();
+    const userData = await res.json();
+    const claseActual = userData.classroomUsers.find(cu => cu.classroom_id === claseSeleccionada);
+    const role = claseActual ? claseActual.role : null;
+    return { ...userData, role };
   }
   throw new Error('Failed to fetch user data');
 }
 
-// Componente para la vista del profesor
+// Componente ajustado de VistaProfesor
 function VistaProfesor({ claseId, clases, alumnos }) {
-  const clase = clases.find(c => c.id === claseId);
+  const clase = clases.find(c => c.classroom_id == claseId);
+
   if (!clase) return <div>Clase no encontrada</div>;
 
+  // Asegúrate de que `clase.tareas` esté disponible o haz una llamada adicional para obtener las tareas
   return (
     <Table>
       <TableHeader>
         <TableRow>
           <TableHead>Alumno</TableHead>
-          {clase.tareas.map((tarea) => (
-            <TableHead key={tarea.id}>{tarea.nombre}</TableHead>
+          {clase?.tareas?.map((tarea) => (
+            <TableHead key={tarea.assignment_id}>{tarea.title}</TableHead>
           ))}
           <TableHead>Promedio</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
         {alumnos.map((alumno) => (
-          <TableRow key={alumno.id}>
-            <TableCell className="font-medium">{alumno.nombre}</TableCell>
-            {clase.tareas.map((tarea) => {
-              const calificacion = alumno.calificaciones.find(c => c.tareaId === tarea.id);
-              return <TableCell key={tarea.id}>{calificacion ? calificacion.valor : 'N/A'}</TableCell>
+          <TableRow key={alumno.user.id}>
+            <TableCell className="font-medium">{alumno.user.name}</TableCell>
+            {clase?.tareas?.map((tarea) => {
+              const calificacion = alumno.calificaciones.find(c => c.assignment_id === tarea.assignment_id);
+              return <TableCell key={tarea.assignment_id}>{calificacion ? calificacion.grade : 'N/A'}</TableCell>
             })}
             <TableCell>
-              {(alumno.calificaciones
-                .filter(c => clase.tareas.some(t => t.id === c.tareaId))
-                .reduce((sum, cal) => sum + cal.valor, 0) / clase.tareas.length).toFixed(2)}
+              {alumno.calificaciones && clase?.tareas
+                ? (
+                    (alumno.calificaciones
+                      .filter(c => clase.tareas.some(t => t.assignment_id === c.assignment_id))
+                      .reduce((sum, cal) => sum + cal.grade, 0) / clase.tareas.length
+                    ).toFixed(2)
+                  )
+                : 'N/A'}
             </TableCell>
           </TableRow>
         ))}
@@ -128,18 +135,34 @@ function VistaProfesor({ claseId, clases, alumnos }) {
   )
 }
 
-// Componente para la vista del alumno
+// Componente ajustado de VistaAlumno
 function VistaAlumno({ user, claseId, clases }) {
-  const clase = clases.find(c => c.id === claseId);
+  const [tareas, setTareas] = useState([]);
+  const [notas, setNotas] = useState([]);
+  const clase = clases.find(c => c.classroom_id == claseId);
+
+  useEffect(() => {
+    const fetchGrades = async () => {
+      if (claseId) {
+        const tareasRes = await fetch(`/api/clases/${claseId}/tareas`);
+        const tareasInfo = await tareasRes.json();
+        setTareas(tareasInfo);
+
+        setNotas(tareasInfo.find(e => e.submissions.student_id === user.id))
+
+      }
+    };
+    fetchGrades();
+  }, [claseId, user]);
+
   if (!clase) return <div>Clase no encontrada</div>;
 
-  const alumno = clase.alumnos.find(a => a.id === user.id);
+  console.log(notas)
+  console.log(tareas)
 
   return (
     <div className="space-y-4">
-      <div className="flex justify-between items-center">
-        <h2 className="text-xl font-semibold">Calificaciones de {user.name}</h2>
-      </div>
+      <h2 className="text-xl font-semibold">Calificaciones de {user.name}</h2>
       <Table>
         <TableHeader>
           <TableRow>
@@ -148,21 +171,19 @@ function VistaAlumno({ user, claseId, clases }) {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {clase.tareas.map((tarea) => {
-            const calificacion = alumno.calificaciones.find(c => c.tareaId === tarea.id);
-            return (
-              <TableRow key={tarea.id}>
-                <TableCell className="font-medium">{tarea.nombre}</TableCell>
-                <TableCell>{calificacion ? calificacion.valor : 'N/A'}</TableCell>
-              </TableRow>
-            )
-          })}
+          {tareas.map((tarea) => (
+            <TableRow key={tarea.assignment_id}>
+              <TableCell className="font-medium">{tarea.title}</TableCell>
+              <TableCell>{notas}</TableCell>
+            </TableRow>
+          ))}
           <TableRow>
             <TableCell className="font-bold">Promedio</TableCell>
             <TableCell className="font-bold">
-              {(alumno.calificaciones
-                .filter(c => clase.tareas.some(t => t.id === c.tareaId))
-                .reduce((sum, cal) => sum + cal.valor, 0) / clase.tareas.length).toFixed(2)}
+              {(
+                tareas.reduce((sum, tarea) => sum + (tarea.calificacion !== 'N/A' ? tarea.calificacion : 0), 0) / 
+                tareas.filter(tarea => tarea.calificacion !== 'N/A').length
+              ).toFixed(2)}
             </TableCell>
           </TableRow>
         </TableBody>

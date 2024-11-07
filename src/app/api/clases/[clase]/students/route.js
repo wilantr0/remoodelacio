@@ -11,7 +11,7 @@ const prisma = new PrismaClient();
 export async function GET(req, { params }) {
   try {
     const students = await prisma.classroomUser.findMany({
-      where: { classroom_id: parseInt(params.clase) },
+      where: { classroom_id: parseInt(params.clase), role: 'alumne' },
       include: { user: true }, // Incluye datos del usuario si la relación existe
     });
     return NextResponse.json(students, { status: 200 });

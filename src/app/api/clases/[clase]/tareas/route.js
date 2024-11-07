@@ -8,6 +8,9 @@ export async function GET(req, { params }) {
   try {
     const assignments = await prisma.assignment.findMany({
       where: { classroom_id: parseInt(params.clase) },
+      include: {
+        submissions: true
+      }
     });
     return NextResponse.json(assignments, { status: 200 });
   } catch (error) {

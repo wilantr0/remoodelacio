@@ -61,3 +61,24 @@ export async function POST(req, { params }) {
     return new Response("Error submitting assignment", { status: 500 });
   }
 }
+
+export async function PUT(req, { params }) {
+  const { tarea } = params;
+  const { grade, submissionId } = await req.json();
+
+  try {
+    // Actualiza la calificación de la tarea
+    const updatedAssignment = await prisma.submission.update({
+      where: { assignment_id: Number(tarea), submission_id: Number(submissionId) },
+      data: {
+        grade: Number(grade),
+      },
+    });
+
+    return new Response(JSON.stringify(updatedAssignment), { status: 200 });
+  } catch (error) {
+    console.error("Error updating assignment:", error);
+    return new Response("Error updating assignment", { status: 500 });
+  }
+
+}
