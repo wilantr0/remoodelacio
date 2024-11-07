@@ -32,4 +32,4 @@ export default function generateProfilePicture(name, size = 100) {
 }
 
 // Ejemplo de uso
-console.log(generateProfilePicture('Manolo Ibañez'));
+console.log(generateProfilePicture('Manolo'));

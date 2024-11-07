@@ -26,6 +26,7 @@
     "fs-extra": "^11.2.0",
     "jose": "^5.9.2",
     "jsonwebtoken": "^9.0.2",
+    "mongodb": "^6.10.0",
     "next": "^14.2.15",
     "pg-promise": "^11.9.1",
     "radix-ui": "^1.0.1",

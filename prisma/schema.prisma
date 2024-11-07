@@ -30,7 +30,7 @@ model User {
 }
 
 model Classroom {
-  classroom_id  Int                 @id @default(autoincrement())
+  classroom_id  String              @id
   name          String
   description   String?
   created_by_id String
@@ -45,7 +45,7 @@ model Classroom {
 }
 
 model ClassroomUser {
-  classroom_id Int
+  classroom_id String
   userId       String
   role         String
   joined_at    DateTime  @default(now())
@@ -58,7 +58,7 @@ model ClassroomUser {
 
 model Assignment {
   assignment_id Int          @id @default(autoincrement())
-  classroom_id  Int
+  classroom_id  String
   title         String
   description   String?
   due_date      DateTime?
@@ -87,7 +87,7 @@ model Submission {
 
 model Announcement {
   announcement_id Int       @id @default(autoincrement())
-  classroom_id    Int
+  classroom_id    String
   created_by_id   String
   title           String
   content         String
@@ -115,7 +115,7 @@ model Comment {
 
 model ClassroomMaterial {
   material_id    Int       @id @default(autoincrement())
-  classroom_id   Int
+  classroom_id   String
   uploaded_by_id String
   title          String
   description    String?
@@ -171,5 +171,4 @@ enum AttendanceStatus {
 enum Role {
   alumn
   teacher
-  super
 }

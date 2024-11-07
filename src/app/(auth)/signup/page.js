@@ -111,7 +111,6 @@ export default function RegisterPage() {
               >
                 <option value="teacher">Professor/a</option>
                 <option value="alumn">Alumne/a</option>
-                <option value="super">Gestor/a</option>
               </select>
             </div>
             {errorMessage && (
