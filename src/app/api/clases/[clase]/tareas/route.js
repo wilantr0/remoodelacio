@@ -7,9 +7,20 @@ const prisma = new PrismaClient();
 export async function GET(req, { params }) {
   try {
     const assignments = await prisma.assignment.findMany({
-      where: { classroom_id: parseInt(params.clase) },
+      where: { classroom_id: params.clase },
       include: {
-        submissions: true
+        submissions: {
+          select: {
+            student_id: true,
+            assignment: true,
+            assignment_id: true,
+            feedback: true,
+            grade: true,
+            submitted_at: true,
+            student: true,
+            submission_id: true
+          }
+        }
       }
     });
     return NextResponse.json(assignments, { status: 200 });
@@ -32,7 +43,7 @@ export async function POST(req, { params }) {
         title: name,
         description,
         due_date: dueDate ? new Date(dueDate) : null,
-        classroom_id: parseInt(params.clase),
+        classroom_id: params.clase,
       },
     });
     return NextResponse.json(newAssignment, { status: 201 });

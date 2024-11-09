@@ -11,8 +11,17 @@ const prisma = new PrismaClient();
 export async function GET(req, { params }) {
   try {
     const students = await prisma.classroomUser.findMany({
-      where: { classroom_id: parseInt(params.clase), role: 'alumne' },
-      include: { user: true }, // Incluye datos del usuario si la relación existe
+      where: { classroom_id: params.clase, role: 'alumne' },
+      include: { user: {
+        include: {submissions: {
+          select: {
+            submission_id: true,
+            grade: true,
+            submitted_at: true,
+            assignment: true
+          }
+        }}
+      } }, // Incluye datos del usuario si la relación existe
     });
     return NextResponse.json(students, { status: 200 });
   } catch (error) {
@@ -44,7 +53,7 @@ export async function POST(req) {
         role: "alumne",
         classroom: {
           connect: {
-            classroom_id: parseInt(classId) // o el valor correcte de `classroom_id` en format número
+            classroom_id: classId // o el valor correcte de `classroom_id` en format número
           },
         },
         user: {

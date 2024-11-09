@@ -5,6 +5,18 @@ import { CardContent, CardHeader, CardTitle } from "@components/ui/card"
 import { Label } from "@components/ui/label"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select"
 import { User, Book, GraduationCap } from 'lucide-react'
+import Image from 'next/image'
+
+async function fetchUserData(claseSeleccionada) {
+  const res = await fetch('/api/user', { credentials: 'include' });
+  if (res.ok) {
+    const userData = await res.json();
+    const claseActual = userData.classroomUsers.find(cu => cu.classroom_id === claseSeleccionada);
+    const role = claseActual ? claseActual.role : null;
+    return { ...userData, role };
+  }
+  throw new Error('Failed to fetch user data');
+}
 
 export default function BlocCalificaciones() {
   const [vistaProfesor, setVistaProfesor] = useState(true);
@@ -18,13 +30,16 @@ export default function BlocCalificaciones() {
       try {
         const userData = await fetchUserData(claseSeleccionada);
         setUser(userData);
-        setVistaProfesor(userData.role === 'professor' || userData.role === 'super');
-
+        setVistaProfesor(userData.role === 'professor');
+  
         const classesRes = await fetch('/api/clases');
         const classesData = await classesRes.json();
         setClases(classesData);
-        setClaseSeleccionada(classesData[0]?.classroom_id || null);
-
+  
+        if (!claseSeleccionada && classesData.length > 0) {
+          setClaseSeleccionada(classesData[0].classroom_id);
+        }
+  
         if (claseSeleccionada) {
           const studentsRes = await fetch(`/api/clases/${claseSeleccionada}/students`);
           const studentsData = await studentsRes.json();
@@ -34,17 +49,16 @@ export default function BlocCalificaciones() {
         console.error('Error fetching data:', error);
       }
     };
-
+  
     fetchData();
   }, [claseSeleccionada]);
 
-  console.log(alumnos)
   return (
     <div>
       <div className="w-full mx-auto">
         <CardHeader>
           <div className="flex justify-between items-center">
-            <Select value={claseSeleccionada?.toString()} onValueChange={(value) => setClaseSeleccionada(Number(value))}>
+            <Select value={claseSeleccionada?.toString()} onValueChange={(value) => setClaseSeleccionada(value)}>
               <SelectTrigger className="w-[180px]">
                 <SelectValue placeholder="Seleccionar clase" />
               </SelectTrigger>
@@ -81,31 +95,40 @@ export default function BlocCalificaciones() {
   )
 }
 
-async function fetchUserData(claseSeleccionada) {
-  const res = await fetch('/api/user', { credentials: 'include' });
-  if (res.ok) {
-    const userData = await res.json();
-    const claseActual = userData.classroomUsers.find(cu => cu.classroom_id === claseSeleccionada);
-    const role = claseActual ? claseActual.role : null;
-    return { ...userData, role };
-  }
-  throw new Error('Failed to fetch user data');
-}
+function VistaProfesor({ claseId, alumnos }) {
+  const [clase, setClase] = useState(null);
 
-// Componente ajustado de VistaProfesor
-function VistaProfesor({ claseId, clases, alumnos }) {
-  const clase = clases.find(c => c.classroom_id == claseId);
+
+  //const clase = clases.find(c => c.classroom_id == claseId);
+  useEffect(() => {
+
+    async function fetchClase () {
+      const claseRes = await fetch(`/api/clases/${claseId}`);
+      const clase = await claseRes.json();
+
+      setClase(clase)
+    }
+
+    fetchClase()
+
+
+  },[claseId] )
+
+
 
   if (!clase) return <div>Clase no encontrada</div>;
 
-  // Asegúrate de que `clase.tareas` esté disponible o haz una llamada adicional para obtener las tareas
+  console.log(clase)
+
   return (
     <Table>
       <TableHeader>
-        <TableRow>
+        <TableRow className='relative h-20'>
           <TableHead>Alumno</TableHead>
-          {clase?.tareas?.map((tarea) => (
-            <TableHead key={tarea.assignment_id}>{tarea.title}</TableHead>
+          {clase.assignments && clase.assignments.map((tarea) => (
+            <TableHead key={tarea.assignment_id} className='w-fit'>
+              <p className='-rotate-45 w-fit border-b border-t'>{tarea.title}</p>
+            </TableHead>
           ))}
           <TableHead>Promedio</TableHead>
         </TableRow>
@@ -113,32 +136,52 @@ function VistaProfesor({ claseId, clases, alumnos }) {
       <TableBody>
         {alumnos.map((alumno) => (
           <TableRow key={alumno.user.id}>
-            <TableCell className="font-medium">{alumno.user.name}</TableCell>
-            {clase?.tareas?.map((tarea) => {
-              const calificacion = alumno.calificaciones.find(c => c.assignment_id === tarea.assignment_id);
-              return <TableCell key={tarea.assignment_id}>{calificacion ? calificacion.grade : 'N/A'}</TableCell>
+            <TableCell className="font-medium flex flex-row items-center gap-2">
+              <Image width={70} height={70} src={alumno.user.image} alt='profilePhoto' />
+              {alumno.user.name} - {alumno.user.email}
+            </TableCell>
+            {clase.assignments && clase.assignments.map((tarea) => {
+              const calificacion = tarea.submissions.find(
+                (sub) => sub.student_id === alumno.user.id
+              );
+              return <TableCell key={tarea.assignment_id}>
+                <a href={`/c/${claseId}/t/${tarea.assignment_id}`} className='decoration-transparent text-black'>{calificacion ? (calificacion.grade === null ? 'N/A' : calificacion.grade) : 'N/A'}</a></TableCell>;
             })}
             <TableCell>
-              {alumno.calificaciones && clase?.tareas
-                ? (
-                    (alumno.calificaciones
-                      .filter(c => clase.tareas.some(t => t.assignment_id === c.assignment_id))
-                      .reduce((sum, cal) => sum + cal.grade, 0) / clase.tareas.length
-                    ).toFixed(2)
-                  )
-                : 'N/A'}
+            {alumno.user.submissions && clase.assignments
+              ? (
+                  (() => {
+                    // Filtra las calificaciones válidas (que no son null)
+                    const calificacionesValidas = alumno.user.submissions
+                      .filter(sub => 
+                        clase.assignments.some(assignment => assignment.assignment_id === sub.assignment.assignment_id) &&
+                        sub.grade !== null
+                      );
+                    
+                    // Si no hay calificaciones válidas, mostramos 'N/A'
+                    if (calificacionesValidas.length === 0) return 'N/A';
+                    
+                    // Calculamos el promedio si hay al menos una calificación válida
+                    const promedio = calificacionesValidas
+                      .reduce((sum, submission) => sum + submission.grade, 0) / calificacionesValidas.length;
+                    
+                    return promedio.toFixed(2);
+                  })()
+                )
+              : 'N/A'}
+
+
+
             </TableCell>
           </TableRow>
         ))}
       </TableBody>
     </Table>
-  )
+  );
 }
 
-// Componente ajustado de VistaAlumno
 function VistaAlumno({ user, claseId, clases }) {
   const [tareas, setTareas] = useState([]);
-  const [notas, setNotas] = useState([]);
   const clase = clases.find(c => c.classroom_id == claseId);
 
   useEffect(() => {
@@ -147,18 +190,12 @@ function VistaAlumno({ user, claseId, clases }) {
         const tareasRes = await fetch(`/api/clases/${claseId}/tareas`);
         const tareasInfo = await tareasRes.json();
         setTareas(tareasInfo);
-
-        setNotas(tareasInfo.find(e => e.submissions.student_id === user.id))
-
       }
     };
     fetchGrades();
   }, [claseId, user]);
 
   if (!clase) return <div>Clase no encontrada</div>;
-
-  console.log(notas)
-  console.log(tareas)
 
   return (
     <div className="space-y-4">
@@ -174,15 +211,15 @@ function VistaAlumno({ user, claseId, clases }) {
           {tareas.map((tarea) => (
             <TableRow key={tarea.assignment_id}>
               <TableCell className="font-medium">{tarea.title}</TableCell>
-              <TableCell>{notas}</TableCell>
+              <TableCell>{tarea.submissions.find(sub => sub.student_id === user.id)?.grade ?? 'N/A'}</TableCell>
             </TableRow>
           ))}
           <TableRow>
             <TableCell className="font-bold">Promedio</TableCell>
             <TableCell className="font-bold">
               {(
-                tareas.reduce((sum, tarea) => sum + (tarea.calificacion !== 'N/A' ? tarea.calificacion : 0), 0) / 
-                tareas.filter(tarea => tarea.calificacion !== 'N/A').length
+                tareas.reduce((sum, tarea) => sum + (tarea.submissions.find(sub => sub.student_id === user.id)?.grade || 0), 0) / 
+                tareas.filter(tarea => tarea.submissions.find(sub => sub.student_id === user.id)?.grade !== undefined).length
               ).toFixed(2)}
             </TableCell>
           </TableRow>

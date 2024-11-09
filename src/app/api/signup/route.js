@@ -3,7 +3,7 @@ import { hashPassword } from '@lib/password';
 import { PrismaClient } from '@prisma/client'
 import jwt from "jsonwebtoken";
 import { cookies } from 'next/headers';
-import generateProfilePicture from '@lib/profilePhoto';
+import {generateProfilePicture} from '@lib/profilePhoto';
 
 
 const prisma = new PrismaClient()

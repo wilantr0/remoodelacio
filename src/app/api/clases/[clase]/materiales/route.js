@@ -7,7 +7,7 @@ const prisma = new PrismaClient();
 export async function GET(req, { params }) {
   try {
     const materials = await prisma.classroomMaterial.findMany({
-      where: { classroom_id: parseInt(params.clase) },
+      where: { classroom_id: params.clase },
     });
     return NextResponse.json(materials, { status: 200 });
   } catch (error) {
@@ -29,7 +29,7 @@ export async function POST(req, { params }) {
         title: name,
         description,
         url,
-        classroom_id: parseInt(params.clase),
+        classroom_id: params.clase,
       },
     });
     return NextResponse.json(newMaterial, { status: 201 });

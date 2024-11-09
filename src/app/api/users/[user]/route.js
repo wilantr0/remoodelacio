@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { PrismaClient } from "@prisma/client";
-import { promises as fs } from 'fs-extra';
-import path from 'path';
+
 
 const prisma = new PrismaClient();
 
@@ -31,14 +30,12 @@ export async function PUT(req, context) {
   const email = formData.get("email");
   const imageFile = formData.get("image"); // Obtenemos el archivo de imagen
 
-  let imageUrl = null;
+  let imageBase64 = null;
 
-  // Guardamos la imagen en el servidor si es necesario
+  // Convertimos la imagen a base64 si se proporciona una
   if (imageFile && imageFile instanceof Blob) {
     const buffer = Buffer.from(await imageFile.arrayBuffer());
-    const filePath = path.join(process.cwd(), 'public', 'uploads', `${id}-${imageFile.name}`);
-    await fs.writeFile(filePath, buffer);
-    imageUrl = `/uploads/${id}-${imageFile.name}`;
+    imageBase64 = buffer.toString('base64'); // Convertimos a base64
   }
 
   try {
@@ -47,7 +44,7 @@ export async function PUT(req, context) {
       data: {
         name,
         email,
-        ...(imageUrl && { image: imageUrl }), // Solo actualizamos la imagen si existe
+        ...(imageBase64 && { image: `data:${imageFile.type};base64,${imageBase64}` }), // Guardamos en formato base64 con el tipo de MIME
       },
     });
 

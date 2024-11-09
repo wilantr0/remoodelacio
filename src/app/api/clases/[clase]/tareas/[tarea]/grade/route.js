@@ -2,10 +2,7 @@ import {prisma} from '@/lib/prisma'
 
 export async function GET(req, { params }) {
   const { tarea } = params;
-
-
-
-
+  console.log(tarea)
   try {
     // Obtiene la tarea y sus entregas
     const grade = await prisma.grade.findMany({

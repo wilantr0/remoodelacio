@@ -1,4 +1,4 @@
-function generateProfilePictureSVG(name, size = 100) {
+export function generateProfilePicture(name, size = 100) {
   // Obtener las iniciales
   const initials = name
     .split(' ')
@@ -30,6 +30,3 @@ function generateProfilePictureSVG(name, size = 100) {
   return dataURL;
 }
 
-// Uso
-const imageDataURL = generateProfilePictureSVG("John Doe");
-console.log(imageDataURL);

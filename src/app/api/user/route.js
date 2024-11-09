@@ -9,10 +9,6 @@ export async function GET() {
 
   const userToken = cookies().get('cookieUser')
   const userId = decodeToken(userToken.value)?.user
-  console.log(userId)
-
-
-
 
   const user = await prisma.user.findUnique({
     where: {
@@ -22,8 +18,6 @@ export async function GET() {
       classroomUsers: true
     }
   })
-
-
 
   if (!user) {
     return NextResponse.json({ message: 'Usuario no encontrado.' }, { status: 404 });

@@ -11,10 +11,16 @@ export default function ClassroomPage() {
   const [error, setError] = useState(null);
   const [showJoin, setShowJoin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
+  const [user, setUser] = useState(null);
+
 
   // Función para obtener las clases desde el servidor
   const fetchClasses = async () => {
     try {
+      const userRes = await fetch(`/api/user`, { credentials: 'include' });
+      const userData = await userRes.json();
+      setUser(userData);
+
       const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/clases`, {
         credentials: "include",
       });
@@ -38,7 +44,7 @@ export default function ClassroomPage() {
     const newClass = { code: classCode };
 
     // Hacer el POST request a la API para unirse a la clase
-    const response = await fetch(`/api/clases/${classCode}/students`, {
+    const response = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/api/clases/${classCode}/students`, {
       method: "POST",
       body: JSON.stringify(newClass),
       credentials: "include",
@@ -58,13 +64,13 @@ export default function ClassroomPage() {
       <div className="flex flex-row items-center justify-between">
         <h1 className="text-2xl font-bold mb-6">Tus Clases</h1>
         <div className="flex flex-row gap-2">
-          <button
+          {user?.role === 'alumn' ? <button
             className="border-2 border-blue-600 text-blue-600 font-bold py-2 px-4 rounded hover:bg-blue-600 hover:text-white"
             onClick={() => setShowJoin(true)}
           >
             Unir-me a una classe
-          </button>
-          <CreateClass onClassCreated={fetchClasses} />
+          </button>:
+          <CreateClass onClassCreated={fetchClasses} />}
         </div>
       </div>
       {error ? (

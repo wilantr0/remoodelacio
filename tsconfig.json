@@ -36,7 +36,8 @@
     "src/app/api/signup/route.js",
     "src/app/api/login/route.js",
     "src/app/(protected)/bloc/page.js",
-    "src/components/Calendar.js"
+    "src/components/Calendar.js",
+    "src/app/(protected)/attendance/page.js"
   ],
   "exclude": ["node_modules"]
 }

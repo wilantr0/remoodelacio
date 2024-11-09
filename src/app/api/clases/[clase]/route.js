@@ -16,12 +16,24 @@ export async function GET(req, context) {
     // Buscar clases en las que el usuario es profesor o estudiante
     const classData = await prisma.classroom.findUnique({
       where: {
-        classroom_id: parseInt(classroomId)
+        classroom_id: classroomId
       },
       include:{
         created_by: true,
         users: true,
-        assignments: true
+        assignments: {
+          include: {
+            submissions: {
+              select: {
+                student_id: true,
+                grade: true,
+                submitted_at: true,
+                submission_id: true,
+
+              }
+            }
+          }
+        },
       }
     });
 

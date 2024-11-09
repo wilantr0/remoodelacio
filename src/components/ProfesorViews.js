@@ -1,3 +1,4 @@
+'use client'
 import Link from "next/link";
 import { useState } from "react";
 import TaskForm from "@components/CreateTask";
@@ -56,12 +57,6 @@ export async function TasquesViewProfessor({ assignments, classId }) {
   return (
     <>
       <h2 className="text-2xl font-semibold mt-4">Gestió de Tasques</h2>
-      <button
-        onClick={() => setIsModalOpen(true)}
-        className="mt-4 bg-green-500 text-white px-4 py-2 rounded-md shadow-md"
-      >
-        Crear Nova Tasca
-      </button>
       <div className="mt-4">
         {assignments.length > 0 ? (
           assignments.map((assignment) => (

@@ -2,6 +2,7 @@
 import { useEffect, useState } from "react";
 import { GeneralViewAlumne, TasquesViewAlumne, NotesView } from "@components/AlumnoViews";
 import { GeneralViewProfessor, TasquesViewProfessor, AlumnesView } from "@components/ProfesorViews";
+import { Maximize } from "lucide-react";
 
 export default function Classe({ params }) {
   const [classInfo, setClassInfo] = useState({});
@@ -11,6 +12,8 @@ export default function Classe({ params }) {
   const [userRole, setUserRole] = useState(null);
   const [activeTab, setActiveTab] = useState("general");
   const [isLoading, setIsLoading] = useState(true);
+  const [showCode, setShowCode] = useState(false);
+
 
 
   useEffect(() => {
@@ -38,7 +41,7 @@ export default function Classe({ params }) {
         setStudents(studentsData || []);
   
         // Encuentra el rol correspondiente a la clase actual
-        const userClassRole = userData.classroomUsers.find((classroom) => classroom.classroom_id === parseInt(params.clase));
+        const userClassRole = userData.classroomUsers.find((classroom) => classroom.classroom_id === params.clase);
         setUserRole(userClassRole ? userClassRole.role : null); // Establece el rol o `null` si no se encuentra
   
       } catch (error) {
@@ -84,8 +87,9 @@ export default function Classe({ params }) {
               </section>
             </div>
             : 
-            <div className="border-2 border-black rounded-md h-full">
-              <p>Codi de la classe:</p>
+            <div className="relative border-2 border-black rounded-md h-full text-5xl flex flex-col justify-center items-center">
+              <Maximize className="absolute top-2 right-2 hover:cursor-pointer" onClick={() => setShowCode(true)} />
+              <p className="font-bold mt-2 text-3xl">Codi de la classe:</p>
               {params.clase}
             </div>
           }
@@ -99,6 +103,17 @@ export default function Classe({ params }) {
           <button onClick={() => setActiveTab("alumnes")} className={activeTab === "alumnes" ? "font-bold" : ""}>Notes</button>
         </div>
 
+        {
+          showCode && 
+          <div className="absolute top-0 right-0 bottom-0 left-0 m-auto bg-white p-4 w-1/2 h-1/2 rounded-md shadow-md">
+          <p className="absolute text-black font-bold text-4xl mb-2">Codi de la classe:</p>
+          <p className="text-black text-[11rem] font-bold h-full w-full  flex justify-center items-center">{params.clase}</p>
+          <button onClick={() => setShowCode(false)} className="mt-2 bg-red-500 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center absolute -top-5 -right-5">
+            X
+          </button>
+        </div>
+
+        }
         {/* Contingut de cada pestaña */}
         {activeTab === "general" && (
           userRole === "alumne" ? (

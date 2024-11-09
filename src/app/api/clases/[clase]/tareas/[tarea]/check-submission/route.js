@@ -1,5 +1,8 @@
 import {prisma} from "@/lib/prisma"; // Asegúrate de ajustar el path de tu instancia de Prisma
 import { NextResponse } from "next/server";
+import { cookies } from "next/headers";
+import { decodeToken } from "@/lib/password";
+
 
 export async function GET(req, {params}) {
   try {
@@ -7,9 +10,14 @@ export async function GET(req, {params}) {
     const clase = params.clase
     const tarea = params.tarea
 
+    const userToken = cookies().get("cookieUser")
+    const decodedToken = decodeToken(userToken.value)
+    const userId = decodedToken.user
+
+
 
     // Validar que los parámetros son números
-    if (!clase || !tarea || isNaN(clase) || isNaN(tarea)) {
+    if (!clase || !tarea) {
       return NextResponse.json({ error: "Invalid parameters" }, { status: 400 });
     }
 
@@ -17,6 +25,7 @@ export async function GET(req, {params}) {
     const submission = await prisma.submission.findFirst({
       where: {
         assignment_id: parseInt(tarea),
+        student_id: userId
       },
     });
 

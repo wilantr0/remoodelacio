@@ -2,8 +2,11 @@ import { PrismaClient } from "@prisma/client";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
 import jwt from 'jsonwebtoken';
+import ShortUniqueId from "short-unique-id";
 
+const { randomUUID } = new ShortUniqueId({ length: 7 });
 const prisma = new PrismaClient();
+
 
 export async function GET() {
   const token = cookies().get("cookieUser")?.value;
@@ -62,6 +65,7 @@ export async function POST(req) {
     // Crear una nueva clase
     const newClassroom = await prisma.classroom.create({
       data: {
+        classroom_id: randomUUID(),
         name: name,
         description: description,
         created_by_id: userId  // El creador de la clase
