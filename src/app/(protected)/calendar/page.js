@@ -1,5 +1,5 @@
 "use client";
-import { X } from "lucide-react";
+import { EllipsisVertical, X } from "lucide-react";
 import ColorPicker from "@components/ColorPicker";
 import React, { useEffect, useState, useCallback } from "react";
 
@@ -39,6 +39,8 @@ const AgendaPage = () => {
   const [eventsLoaded, setEventsLoaded] = useState(false);
   const [showCreate, setShowCreate] = useState(false);
   const [editingEventId, setEditingEventId] = useState(null);
+  const [selectedEventId, setSelectedEventId] = useState(null);
+
 
   const weekDates = getWeekDates();
 
@@ -62,12 +64,17 @@ const AgendaPage = () => {
           .flatMap((item) =>
             item.classroom.assignments.map((assignment) => ({
               id: `${assignment.title}-${assignment.due_date}`,
+              classroom_id: assignment.classroom_id,
+              classroom_name: assignment.classroom.name,
+              task_id: assignment.assignment_id,
               dia: assignment.due_date,
               tipus: "Tarea",
               descripcio: assignment.title,
               color: "lime-400",
             }))
           );
+
+          console.log(tasks)
 
         setEvents([...eventsData.filter((e) => e.dia), ...tasks]);
 
@@ -136,6 +143,10 @@ const AgendaPage = () => {
     }
   };
 
+  const handleClickEvent = (eventId) => {
+    setSelectedEventId(selectedEventId === eventId ? null : eventId);
+  }
+
   return (
     <div className="container mx-auto p-4">
       <h1 className="text-2xl font-bold mb-3">Agenda setmanal</h1>
@@ -153,7 +164,7 @@ const AgendaPage = () => {
           <div className="flex flex-col gap-4 mb-4">
             {weekDates.map((date, index) => (
               <div key={index} className="p-4 border rounded shadow-md w-1/5">
-                <h2 className="text-xl font-semibold mb-2">
+                <h2 className="text-xl font-semibold mb-2 user-select-none">
                   {date.toLocaleDateString("ca-ES", { weekday: "long" }).charAt(0).toUpperCase() +
                     date.toLocaleDateString("ca-ES", { weekday: "long" }).slice(1)}{" "}
                   - {date.toLocaleDateString()}
@@ -169,15 +180,36 @@ const AgendaPage = () => {
                           new Date(event.dia).toLocaleDateString() === date.toLocaleDateString()
                       )
                       .map((event) => (
-                        <div key={event.id} className={`p-2 rounded bg-${event.color}`}>
-                          <p className="font-bold text-xl">{event.tipus}</p>
-                          <p className="text-lg">{event.descripcio}</p>
-                          <button onClick={() => handleEditEvent(event)}>Edit</button>
-                          <button onClick={() => handleDeleteEvent(event.id)}>Delete {event.id}</button>
+                        <div key={event.id} className={`relative w-9/12 p-2 rounded bg-${event.color}`} >
+                          <EllipsisVertical className="absolute top-2 right-[0.5rem] cursor-pointer" onClick={() => handleClickEvent(event.id)} />
+                          <p className="font-bold text-xl user-select-none">{event.tipus}</p>
+                          <p className="text-lg user-select-none">{event.descripcio}</p>
+                          {selectedEventId === event.id && (
+                        <div className="flex flex-col gap-2 bg-white absolute top-2 right-8 p-2 rounded shadow-md">
+                          <button
+                            className="bg-orange-300 rounded p-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleEditEvent(event);
+                            }}
+                          >
+                            Edit
+                          </button>
+                          <button
+                            className="bg-rose-600 rounded p-2"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleDeleteEvent(event.id);
+                            }}
+                          >
+                            Delete
+                          </button>
+                        </div>
+                      )}
                         </div>
                       ))
                   ) : (
-                    <p>No hi ha cap esdeveniment</p>
+                    <p className="user-select-none">No hi ha cap esdeveniment</p>
                   )}
                 </div>
               </div>
@@ -187,17 +219,17 @@ const AgendaPage = () => {
           <h2 className="text-2xl font-bold mb-4">Propers esdeveniments</h2>
           <div className="flex flex-wrap gap-4 mb-4">
             {upcomingEvents.map((event) => (
-              <div
+              <a
+                href={event.classroom_id ? `/c/${event.classroom_id}/t/${event.task_id}` : '#'}
                 key={event.id}
-                className={`p-4 border rounded shadow-md w-1/4 bg-${event.color}`}
-                style={{ backgroundColor: event.color }}
+                className={`p-4 border rounded shadow-md w-1/4 decoration-transparent text-black bg-${event.color}`}
               >
-                <h3 className="text-xl font-semibold mb-2">{event.tipus}</h3>
+                <h3 className={`text-xl font-semibold mb-2 ${event.classroom_id ? 'underline' : ''}`}>{event.tipus}</h3>
                 <p>{new Date(event.dia).toLocaleDateString()}</p>
-                <p>{event.descripcio}</p>
-              </div>
+                <p className="text-lg"><span className="font-bold text-xl">{event.classroom_name ? `${event.classroom_name} -` : '' }</span> {event.descripcio}</p>
+              </a>
             ))}
-            {upcomingEvents.length === 0 && <p>No hay próximos eventos.</p>}
+            {upcomingEvents.length === 0 && <p>No hi ha propers esdeveniments.</p>}
           </div>
         </>
       )}

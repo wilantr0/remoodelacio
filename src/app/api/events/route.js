@@ -18,11 +18,19 @@ export async function GET(req) {
       where: {userId: userId},
       include: {
         classroom: {
+
           select: {
             assignments: {
               select: {
                 title: true,
-                due_date: true
+                due_date: true,
+                assignment_id: true,
+                classroom_id: true,
+                classroom: {
+                  select: {
+                    name: true
+                  }
+                }
               }
             }
           }
