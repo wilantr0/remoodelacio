@@ -13,7 +13,25 @@ export async function GET(req) {
     const events = await prisma.event.findMany({
       where: { userId: userId },
     });
-    return new Response(JSON.stringify(events), { status: 200 });
+
+    const tasks = await prisma.classroomUser.findMany({
+      where: {userId: userId},
+      include: {
+        classroom: {
+          select: {
+            assignments: {
+              select: {
+                title: true,
+                due_date: true
+              }
+            }
+          }
+        }
+      }
+    })
+
+    const allEvents = [...events, ...tasks]
+    return new Response(JSON.stringify(allEvents), { status: 200 });
   } catch (error) {
     console.log(error)
     return new Response("Error al obtener los eventos", { status: 500 });
