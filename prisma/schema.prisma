@@ -25,6 +25,7 @@ model User {
   notifications     Notification[]
   submissions       Submission[]        @relation("StudentSubmissions")
   attendances       Attendance[]
+  events            Event[]
 
   @@map("users")
 }
@@ -162,6 +163,18 @@ model Attendance {
   @@map("attendances")
 }
 
+model Event {
+  id         Int       @id @default(autoincrement())
+  dia        DateTime // Campo tipo Date
+  tipus      EventType // Enum que define los tipos de eventos
+  descripcio String
+  userId     String // Relación con el usuario
+  color      String?
+  user       User      @relation(fields: [userId], references: [id])
+
+  @@map("events")
+}
+
 enum AttendanceStatus {
   PRESENT
   ABSENT
@@ -171,4 +184,10 @@ enum AttendanceStatus {
 enum Role {
   alumn
   teacher
+}
+
+enum EventType {
+  Excursio
+  Examen
+  Tasca
 }

@@ -2,7 +2,7 @@
 import { useEffect, useState } from "react";
 import { GeneralViewAlumne, TasquesViewAlumne, NotesView } from "@components/AlumnoViews";
 import { GeneralViewProfessor, TasquesViewProfessor, AlumnesView } from "@components/ProfesorViews";
-import { Maximize } from "lucide-react";
+import { Maximize, X } from "lucide-react";
 
 export default function Classe({ params }) {
   const [classInfo, setClassInfo] = useState({});
@@ -105,11 +105,11 @@ export default function Classe({ params }) {
 
         {
           showCode && 
-          <div className="absolute top-0 right-0 bottom-0 left-0 m-auto bg-white p-4 w-1/2 h-1/2 rounded-md shadow-md">
+          <div className="absolute top-0 right-0 bottom-0 left-0 m-auto bg-white p-4 w-fit h-1/2 rounded-md shadow-md">
           <p className="absolute text-black font-bold text-4xl mb-2">Codi de la classe:</p>
           <p className="text-black text-[11rem] font-bold h-full w-full  flex justify-center items-center">{params.clase}</p>
-          <button onClick={() => setShowCode(false)} className="mt-2 bg-red-500 hover:bg-gray-400 text-gray-800 font-bold py-2 px-4 rounded inline-flex items-center absolute -top-5 -right-5">
-            X
+          <button onClick={() => setShowCode(false)} className="mt-2 bg-red-500 hover:bg-gray-400 text-gray-800 font-bold p-2 rounded-full inline-flex items-center absolute -top-5 -right-5">
+            <X />
           </button>
         </div>
 

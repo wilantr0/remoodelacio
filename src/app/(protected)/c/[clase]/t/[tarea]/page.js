@@ -25,7 +25,7 @@ export default function AssignmentDetailsPage({ params }) {
           setErrorMessage("Error al cargar los detalles de la tarea.");
         }
       } catch (error) {
-        setErrorMessage("Error al conectar con el servidor.");
+        setErrorMessage("");
       } finally {
         setLoading(false);
       }
@@ -112,7 +112,7 @@ export default function AssignmentDetailsPage({ params }) {
         setErrorMessage("Error al asignar la calificación.");
       }
     } catch (error) {
-      setErrorMessage("Error al conectar con el servidor.");
+      setErrorMessage("");
     }
   };
 
