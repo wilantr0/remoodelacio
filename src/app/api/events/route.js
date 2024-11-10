@@ -76,7 +76,7 @@ export async function DELETE(req) {
       return new Response("id no proporcionados", { status: 400 });
     }
 
-    const event = await prisma.event.delete({
+    await prisma.event.delete({
       where: { id: eventId },
     });
     return new Response("Evento eliminado", { status: 200 });
