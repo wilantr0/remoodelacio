@@ -30,7 +30,7 @@ export default function LoggedNavBar () {
         <nav className='hidden md:flex space-x-8'>
           <a className='text-sm font-medium hover:text-blue-600 decoration-transparent' href='/c'>Classes</a>
           <a className='text-sm font-medium hover:text-blue-600 decoration-transparent' href='/calendar'>Agenda</a>
-          <a className='text-sm font-medium hover:text-blue-600 decoration-transparent' href='/attendance'>Asistència</a>
+          <a className='text-sm font-medium hover:text-blue-600 decoration-transparent' href='/attendance'>Assistència</a>
           <a className='text-sm font-medium hover:text-blue-600 decoration-transparent' href='/bloc'>Bloc</a>
         </nav>
         <div className='flex-shrink-0'>

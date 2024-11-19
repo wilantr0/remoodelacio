@@ -71,13 +71,13 @@ export default function BlocCalificaciones() {
                 ))}
               </SelectContent>
             </Select>
-            <CardTitle className="text-2xl">Bloc de Calificaciones</CardTitle>
+            <CardTitle className="text-2xl">Bloc de Qualificacions</CardTitle>
             <div className="flex items-center space-x-2">
               <Label htmlFor="vista-switch" className="text-sm">
                 {vistaProfesor ? (
-                  <><User className="inline mr-1" size={16} /> Profesor</>
+                  <><User className="inline mr-1" size={16} /> Professor</>
                 ) : (
-                  <><Book className="inline mr-1" size={16} /> Alumno</>
+                  <><Book className="inline mr-1" size={16} /> Alumne/a</>
                 )}
               </Label>
             </div>
@@ -116,7 +116,7 @@ function VistaProfesor({ claseId, alumnos }) {
 
 
 
-  if (!clase) return <div>Clase no encontrada</div>;
+  if (!clase) return <div>No s&#39;ha trobat la classe</div>;
 
   console.log(clase)
 
@@ -124,13 +124,13 @@ function VistaProfesor({ claseId, alumnos }) {
     <Table>
       <TableHeader>
         <TableRow className='relative h-20'>
-          <TableHead>Alumno</TableHead>
+          <TableHead>Alumne/a</TableHead>
           {clase.assignments && clase.assignments.map((tarea) => (
             <TableHead key={tarea.assignment_id} className='w-fit'>
               <p className='-rotate-45 w-fit border-b border-t'>{tarea.title}</p>
             </TableHead>
           ))}
-          <TableHead>Promedio</TableHead>
+          <TableHead>Mitjana</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>
@@ -195,16 +195,16 @@ function VistaAlumno({ user, claseId, clases }) {
     fetchGrades();
   }, [claseId, user]);
 
-  if (!clase) return <div>Clase no encontrada</div>;
+  if (!clase) return <div>No s&#39;ha trobat la classe</div>;
 
   return (
     <div className="space-y-4">
-      <h2 className="text-xl font-semibold">Calificaciones de {user.name}</h2>
+      <h2 className="text-xl font-semibold">Qualificacions de {user.name}</h2>
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Tarea</TableHead>
-            <TableHead>Calificación</TableHead>
+            <TableHead>Tasca</TableHead>
+            <TableHead>Qualificació</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -215,7 +215,7 @@ function VistaAlumno({ user, claseId, clases }) {
             </TableRow>
           ))}
           <TableRow>
-            <TableCell className="font-bold">Promedio</TableCell>
+            <TableCell className="font-bold">Mitjana</TableCell>
             <TableCell className="font-bold">
               {(
                 tareas.reduce((sum, tarea) => sum + (tarea.submissions.find(sub => sub.student_id === user.id)?.grade || 0), 0) / 

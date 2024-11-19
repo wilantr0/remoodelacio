@@ -2,6 +2,18 @@
 import Link from "next/link";
 import { useState } from "react";
 import TaskForm from "@components/CreateTask";
+import { X } from "lucide-react";
+
+const transformDate = (isoDate) => {
+  const date = new Date(isoDate);
+  const daysOfWeek = ['diumenge', 'dilluns', 'dimarts', 'dimecres', 'dijous', 'divendres', 'dissabte'];
+
+  const dayOfWeek = daysOfWeek[date.getDay()]
+  const day = String(date.getDate()).padStart(2, '0'); // Asegura 2 dígitos
+  const month = String(date.getMonth() + 1).padStart(2, '0'); // Mes (0-11) + 1
+  const year = date.getFullYear();
+  return `${dayOfWeek}, ${day}-${month}-${year}`;
+};
 // Vista General per a Professors
 export function GeneralViewProfessor({ assignments, materials, clase }) {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -11,6 +23,8 @@ export function GeneralViewProfessor({ assignments, materials, clase }) {
     setTaskList((prevTasks) => [...prevTasks, info]); 
     setIsModalOpen(false); // Cierra el modal al crear la tarea
   };
+
+ 
 
 
 
@@ -34,9 +48,9 @@ export function GeneralViewProfessor({ assignments, materials, clase }) {
       </div>
       {
         isModalOpen?<div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50">
-          <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-            <h2 className="text-xl font-bold mb-4">Crear Nou Element</h2>
+          <div className="relative bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
             <TaskForm classId={clase} onSubmitSuccess={handleTaskCreationSuccess} />
+            <span className="absolute -top-5 -right-5 bg-red-500 rounded-full p-2 text-white cursor-pointer" onClick={() => setIsModalOpen(false)}><X /></span>
           </div>
         </div>
         : ''
@@ -60,17 +74,17 @@ export async function TasquesViewProfessor({ assignments, classId }) {
       <div className="mt-4">
         {assignments.length > 0 ? (
           assignments.map((assignment) => (
-            <div key={assignment.assignment_id} className="border p-4 mb-4">
-              <Link href={`/c/${classId}/t/${assignment.assignment_id}`}>
-                <h3 className="font-bold cursor-pointer text-blue-500 hover:underline">
+              <Link key={assignment.assignment_id} className="decoration-transparent text-black" href={`/c/${classId}/t/${assignment.assignment_id}`}>
+                <div  className="border p-4 mb-4">
+                  <h3 className="font-bold cursor-pointer">
                   {assignment.title}
-                </h3>
+                  </h3>
+                  <p className="flex flex-row justify-between">
+                    <span>Descripció: {assignment.description}</span>
+                    <span>Data d&#39;entrega: {transformDate(assignment.due_date) || "Sense data d'entrega"}</span>
+                  </p>
+                </div>
               </Link>
-              <p className="flex flex-row justify-between">
-                <span>Descripció: {assignment.description}</span>
-                <span>Data d&#39;entrega: {assignment.due_date || "Sense data d'entrega"}</span>
-              </p>
-            </div>
           ))
         ) : (
           <p>No hi ha tasques disponibles per a aquesta classe.</p>
@@ -78,7 +92,7 @@ export async function TasquesViewProfessor({ assignments, classId }) {
       </div>
     </>
   );
-}
+}   
 
 
 // Vista Alumnes (per a professors)
@@ -88,8 +102,8 @@ export function AlumnesView({ students }) {
       <h2 className="text-2xl font-semibold mt-4">Llista d&#39;Alumnes</h2>
       <div className="mt-4">
         {students.map((student) => (
-          <div key={student.user.id} className="border p-4 mb-4">
-            <p>{student.user.name}</p>
+          <div key={student.user.id} className="border p-4 mb-4 flex flex-row justify-between items-center">
+            {student.user.name}
           </div>
         ))}
       </div>

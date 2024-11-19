@@ -53,27 +53,27 @@ export default function TaskForm({ classId, onSubmitSuccess }) {
 
   return (
     <form onSubmit={handleSubmit} className="p-4 bg-gray-100 rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4">Crear {type === "tarea" ? "Nueva Tarea" : "Nuevo Material"}</h2>
+      <h2 className="text-2xl font-bold mb-4">Crear {type === "tarea" ? "Nova Tasca" : "Nou Material"}</h2>
       
       {error && <p className="text-red-500 mb-4">{error}</p>}
       {successMessage && <p className="text-green-500 mb-4">{successMessage}</p>}
 
       {/* Selector de Tipo */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Tipo</label>
+        <label className="block text-sm font-medium text-gray-700">Tipus <span className="text-red-500" >*</span></label>
         <select
           value={type}
           onChange={(e) => setType(e.target.value)}
           className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
         >
-          <option value="tarea">Tarea</option>
+          <option value="tarea">Tasca</option>
           <option value="material">Material</option>
         </select>
       </div>
 
       {/* Campos comunes */}
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Nombre</label>
+        <label className="block text-sm font-medium text-gray-700">Nom <span className="text-red-500" >*</span></label>
         <input
           type="text"
           value={name}
@@ -83,7 +83,7 @@ export default function TaskForm({ classId, onSubmitSuccess }) {
         />
       </div>
       <div className="mb-4">
-        <label className="block text-sm font-medium text-gray-700">Descripción</label>
+        <label className="block text-sm font-medium text-gray-700">Descripció <span className="text-red-500" >*</span></label>
         <textarea
           value={description}
           onChange={(e) => setDescription(e.target.value)}
@@ -99,7 +99,6 @@ export default function TaskForm({ classId, onSubmitSuccess }) {
             type="url"
             value={url}
             onChange={(e) => setUrl(e.target.value)}
-            required
             className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm"
           />
         </div>
@@ -108,7 +107,7 @@ export default function TaskForm({ classId, onSubmitSuccess }) {
       {/* Campo de Fecha de Entrega para Tareas */}
       {type === "tarea" && (
         <div className="mb-4">
-          <label className="block text-sm font-medium text-gray-700">Fecha de Entrega</label>
+          <label className="block text-sm font-medium text-gray-700">Data de Entrega</label>
           <input
             type="date"
             value={dueDate}

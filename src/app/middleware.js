@@ -1,22 +1,41 @@
-// import { NextResponse } from 'next/server';
-// import jwt from 'jsonwebtoken';
+import { NextResponse } from 'next/server'
+import { decodeToken } from '@lib/password'
+import { cookies } from 'next/headers'
 
-// export async function middleware(req) {
-//   const token = req.cookies.get('authToken');
+// 1. Specify protected and public routes
+const protectedRoutes = ['/dashboard', '/c']
+const publicRoutes = ['/login', '/signup', '/']
 
-//   if (!token) {
-//     return NextResponse.redirect(new URL('/login', req.url));
-//   }
+console.log(publicRoutes)
 
-//   try {
-//     jwt.verify(token, process.env.JWT_SECRET);
-//     return NextResponse.next();
-//   } catch (error) {
-//     return NextResponse.redirect(new URL('/login', req.url));
-//   }
-// }
+export default async function middleware(req) {
+  // 2. Check if the current route is protected or public
+  const path = req.nextUrl.pathname
+  const isProtectedRoute = protectedRoutes.includes(path)
+  const isPublicRoute = publicRoutes.includes(path)
 
-// // Define qué rutas estarán protegidas
-// export const config = {
-//   matcher: ['/dashboard/:path*','/assistance/:path*', '/bloc/:path*', '/c/:path*', '/calendar/:path*'], // Protege todas las rutas bajo /dashboard
-// };
+  // 3. Decrypt the session from the cookie
+  const cookie =  cookies().get('cookieUser')?.value
+  const session = await decodeToken(cookie)
+
+  // 5. Redirect to /login if the user is not authenticated
+  if (isProtectedRoute && !session?.user) {
+    return NextResponse.redirect(new URL('/login', req.nextUrl))
+  }
+
+  // 6. Redirect to /dashboard if the user is authenticated
+  if (
+    isPublicRoute &&
+    session?.userId &&
+    !req.nextUrl.pathname.startsWith('/dashboard')
+  ) {
+    return NextResponse.redirect(new URL('/dashboard', req.nextUrl))
+  }
+
+  return NextResponse.next()
+}
+
+// Routes Middleware should not run on
+export const config = {
+  matcher: ['/((?!api|_next/static|_next/image|.*\\.png$).*)'],
+}

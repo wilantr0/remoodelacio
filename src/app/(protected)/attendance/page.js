@@ -1,222 +1,160 @@
-"use client"
-import React, { useEffect, useState } from 'react'
-import { Button } from "@components/ui/button"
-import { Table, TableBody, TableCell, TableHead, TableHeader, TableRow } from "@components/ui/table"
-import { Badge } from "@components/ui/badge"
-import { Textarea } from "@components/ui/textarea"
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@components/ui/select"
-import { AlertCircle, Clock, X, MessageSquare, GraduationCap } from 'lucide-react'
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-} from "@components/ui/dialog"
+"use client";
 
-// Componente principal
-export default function AsistenciaPage() {
-  const [clases, setClases] = useState([])
-  const [claseSeleccionada, setClaseSeleccionada] = useState(null)
-  const [alumnos, setAlumnos] = useState([])
+import { useState, useEffect } from "react";
 
-  // Estado para el modal de observaciones y la observación temporal
-  const [alumnoSeleccionado, setAlumnoSeleccionado] = useState(null)
-  const [observacionTemp, setObservacionTemp] = useState('')
+export default function AttendancePage() {
+  const [alumnes, setAlumnes] = useState([]);
+  const [classeSeleccionada, setClasseSeleccionada] = useState("");
 
-  // Cargar las clases al montar el componente
   useEffect(() => {
-    async function fetchClases() {
+    const fetchAlumnes = async () => {
       try {
-        const res = await fetch('/api/clases')
-        const data = await res.json()
-        setClases(data)
+        if (!classeSeleccionada) return;
+
+        const response = await fetch(`/api/clases/${classeSeleccionada}/students`);
+        if (!response.ok) throw new Error("Error en carregar els alumnes");
+
+        const data = await response.json();
+
+        const alumnesAmbAssistencia = data.map((alumne) => ({
+          ...alumne,
+          assistencia: "PRESENT", // Estat inicial
+          observacions: "", // Afegim camp per observacions
+        }));
+
+        setAlumnes(alumnesAmbAssistencia);
       } catch (error) {
-        console.error("Error al cargar las clases:", error)
+        console.error("Error en carregar alumnes:", error);
+        alert("Error en carregar els alumnes");
       }
-    }
-    fetchClases()
-  }, [])
+    };
 
-  // Cargar los alumnos cuando se selecciona una clase
-  useEffect(() => {
-    if (claseSeleccionada) {
-      console.log("Clase seleccionada:", claseSeleccionada); // Verifica que este valor sea el correcto
-      async function fetchAlumnos() {
-        try {
-          const res = await fetch(`/api/clases/${claseSeleccionada}/students`);
-          const data = await res.json();
-          setAlumnos(data);
-        } catch (error) {
-          console.error("Error al cargar los alumnos:", error);
-        }
-      }
-      fetchAlumnos();
-    }
-  }, [claseSeleccionada]);
-  
-  // Función para actualizar la asistencia de un alumno
-  const actualizarAsistencia = (id, estado) => {
-    setAlumnos(alumnos.map(alumno =>
-      alumno.id === id
-        ? {
-            ...alumno,
-            asistencia: estado,
-            faltas: estado === 'falta' ? alumno.faltas + 1 : alumno.faltas
-          }
-        : alumno
-    ))
-  }
-  
+    fetchAlumnes();
+  }, [classeSeleccionada]);
 
-  // Función para abrir el modal de observaciones
-  const abrirModalObservaciones = (alumno) => {
-    setAlumnoSeleccionado(alumno)
-    setObservacionTemp(alumno.observaciones)
-  }
+  const actualitzarAssistencia = (idAlumne, novaAssistencia) => {
+    setAlumnes((alumnesActuals) =>
+      alumnesActuals.map((alumne) =>
+        alumne.user.id === idAlumne
+          ? { ...alumne, assistencia: novaAssistencia }
+          : alumne
+      )
+    );
+  };
 
-  const guardarCambios = async () => {
+  const actualitzarObservacions = (idAlumne, novesObservacions) => {
+    setAlumnes((alumnesActuals) =>
+      alumnesActuals.map((alumne) =>
+        alumne.user.id === idAlumne
+          ? { ...alumne, observacions: novesObservacions }
+          : alumne
+      )
+    );
+  };
+
+  const guardarAssistencia = async () => {
     try {
-      const response = await fetch(`/api/clases/${claseSeleccionada}/attendance`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(alumnos),
-      })
-      if (!response.ok) throw new Error('Error al guardar la asistencia')
-      alert('Asistencia guardada correctamente')
+      const data = alumnes.reduce((acc, alumne) => {
+        acc[alumne.user.id] = {
+          assistencia: alumne.assistencia,
+          observacions: alumne.observacions,
+        };
+        return acc;
+      }, {});
+
+      const response = await fetch(`/api/clases/${classeSeleccionada}/attendance`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+      });
+
+      if (!response.ok) {
+        throw new Error("Error en guardar l'assistència");
+      }
+
+      alert("Assistència guardada correctament");
     } catch (error) {
-      console.error('Error al guardar asistencia:', error)
-      alert('Error al guardar la asistencia')
+      console.error("Error en guardar l'assistència:", error);
+      alert("Error en guardar l'assistència");
     }
-  }
+  };
 
-  // Función para guardar observaciones
-  const guardarObservaciones = () => {
-    if (alumnoSeleccionado) {
-      setAlumnos(alumnos.map(alumno =>
-        alumno.id === alumnoSeleccionado.id
-          ? { ...alumno, observaciones: observacionTemp }
-          : alumno
-      ))
-      setAlumnoSeleccionado(null)
-    }
-  }
-
-  // Función para calcular el porcentaje de faltas
-  const calcularPorcentajeFaltas = (faltas, totalClases) => {
-    return ((faltas / totalClases) * 100).toFixed(1)
-  }
-
-  console.log(alumnos)
   return (
-    <div className="container mx-auto p-4">
-      <h1 className="text-2xl font-bold mb-4">Control de Asistencia</h1>
+    <div className="p-4">
+      <h1 className="text-2xl font-bold mb-4">Control d&#39;assistència</h1>
 
-      {/* Select para elegir una clase */}
-      <Select onValueChange={(value) => setClaseSeleccionada(value)}>
-        <SelectTrigger>
-          <SelectValue placeholder="Selecciona una clase" />
-        </SelectTrigger>
-        <SelectContent>
-          {clases.map((clase) => (
-            <SelectItem key={clase.classroom_id} value={clase.classroom_id.toString()}>
-              <GraduationCap className="mr-2 h-4 w-4 inline-block" />
-              {clase.name}
-            </SelectItem>
-          ))}
-        </SelectContent>
-      </Select>
+      <div className="mb-4">
+        <label htmlFor="classe" className="block font-medium mb-2">
+          Selecciona una classe:
+        </label>
+        <select
+          id="classe"
+          value={classeSeleccionada}
+          onChange={(e) => setClasseSeleccionada(e.target.value)}
+          className="border border-gray-300 rounded px-2 py-1 w-full"
+        >
+          <option value="">Selecciona una classe</option>
+          <option value="classroom1">Classe 1</option>
+          <option value="classroom2">Classe 2</option>
+        </select>
+      </div>
 
-      {/* Mostrar la tabla de alumnos solo si hay una clase seleccionada */}
-      {claseSeleccionada && alumnos.length > 0 && (
-        <Table className="mt-4">
-          <TableHeader>
-            <TableRow>
-              <TableHead>Nombre</TableHead>
-              <TableHead>Asistencia</TableHead>
-              <TableHead>Observaciones</TableHead>
-              <TableHead>% Faltas</TableHead>
-            </TableRow>
-          </TableHeader>
-          <TableBody>
-            {alumnos.map((alumno) => (
-              <TableRow key={alumno.user.id}>
-                <TableCell>{alumno.user.name}</TableCell>
-                <TableCell>
-                  <div className="flex space-x-2">
-                    <Button
-                      size="sm"
-                      variant={alumno.asistencia === 'presente' ? 'default' : 'outline'}
-                      onClick={() => actualizarAsistencia(alumno.id, 'presente')}
-                    >
-                      Presente
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={alumno.asistencia === 'retraso' ? 'default' : 'outline'}
-                      onClick={() => actualizarAsistencia(alumno.id, 'retraso')}
-                    >
-                      <Clock className="mr-1 h-4 w-4" />
-                      Retraso
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={alumno.asistencia === 'falta' ? 'default' : 'outline'}
-                      onClick={() => actualizarAsistencia(alumno.id, 'falta')}
-                    >
-                      <X className="mr-1 h-4 w-4" />
-                      Falta
-                    </Button>
-                    <Button
-                      size="sm"
-                      variant={alumno.asistencia === 'incidencia' ? 'default' : 'outline'}
-                      onClick={() => actualizarAsistencia(alumno.id, 'incidencia')}
-                    >
-                      <AlertCircle className="mr-1 h-4 w-4" />
-                      Incidencia
-                    </Button>
-                  </div>
-                </TableCell>
-                <TableCell>
-                  <Dialog>
-                    <DialogTrigger asChild>
-                      <Button
-                        size="sm"
-                        variant="outline"
-                        onClick={() => abrirModalObservaciones(alumno)}
+      {alumnes.length > 0 ? (
+        <table className="table-auto w-full border-collapse border border-gray-300">
+          <thead>
+            <tr>
+              <th className="border border-gray-300 px-4 py-2">Nom</th>
+              <th className="border border-gray-300 px-4 py-2">Assistència</th>
+              <th className="border border-gray-300 px-4 py-2">Observacions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {alumnes.map((alumne) => (
+              <tr key={alumne.user.id}>
+                <td className="border border-gray-300 px-4 py-2">{alumne.user.name}</td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <div className="flex gap-2">
+                    {["PRESENT", "RETARD", "ABSENT", "INCIDENCIA"].map((estat) => (
+                      <button
+                        key={estat}
+                        className={`px-2 py-1 rounded ${
+                          alumne.assistencia === estat
+                            ? "bg-blue-500 text-white"
+                            : "bg-gray-200"
+                        }`}
+                        onClick={() => actualitzarAssistencia(alumne.user.id, estat)}
                       >
-                        <MessageSquare className="mr-1 h-4 w-4" />
-                        Observaciones
-                      </Button>
-                    </DialogTrigger>
-                    <DialogContent className="sm:max-w-[425px]">
-                      <DialogHeader>
-                        <DialogTitle>Observaciones para {alumno.nombre}</DialogTitle>
-                      </DialogHeader>
-                      <Textarea
-                        placeholder="Escribe tus observaciones aquí"
-                        value={observacionTemp}
-                        onChange={(e) => setObservacionTemp(e.target.value)}
-                        className="min-h-[100px]"
-                      />
-                      <Button onClick={guardarObservaciones}>Guardar Observaciones</Button>
-                    </DialogContent>
-                  </Dialog>
-                </TableCell>
-                <TableCell>
-                  <Badge variant={Number(calcularPorcentajeFaltas(alumno.faltas, alumno.totalClases)) > 20 ? "destructive" : "secondary"}>
-                    {calcularPorcentajeFaltas(alumno.faltas, alumno.totalClases)}%
-                  </Badge>
-                </TableCell>
-              </TableRow>
+                        {estat === "PRESENT" ? "Present" : estat === "RETARD" ? "Retard" : estat === "ABSENT" ? "Falta" : "Incidència"}
+                      </button>
+                    ))}
+                  </div>
+                </td>
+                <td className="border border-gray-300 px-4 py-2">
+                  <input
+                    type="text"
+                    value={alumne.observacions}
+                    onChange={(e) =>
+                      actualitzarObservacions(alumne.user.id, e.target.value)
+                    }
+                    placeholder="Observacions"
+                    className="border border-gray-300 rounded px-2 py-1 w-full"
+                  />
+                </td>
+              </tr>
             ))}
-          </TableBody>
-        </Table>
-        
+          </tbody>
+        </table>
+      ) : (
+        <p className="text-gray-500">Selecciona una classe per veure els alumnes.</p>
       )}
-      <Button className="mt-4" onClick={guardarCambios}>
-        Guardar Todos los Cambios
-      </Button>
+
+      <button
+        onClick={guardarAssistencia}
+        className="px-4 py-2 bg-blue-500 text-white rounded-md hover:bg-blue-600 mt-4"
+        disabled={!classeSeleccionada || alumnes.length === 0}
+      >
+        Guarda tots els canvis
+      </button>
     </div>
-  )
+  );
 }

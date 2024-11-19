@@ -19,7 +19,7 @@ export async function POST(req, { params }) {
   const body = await req.json();
   const { name, description, url } = body;
 
-  if (!name || !url) {
+  if (!name) {
     return NextResponse.json({ message: 'Nombre y URL son requeridos.' }, { status: 400 });
   }
 
@@ -28,8 +28,9 @@ export async function POST(req, { params }) {
       data: {
         title: name,
         description,
-        url,
+        file_path: url || '',
         classroom_id: params.clase,
+        classroom: { connect: { id: params.clase } },
       },
     });
     return NextResponse.json(newMaterial, { status: 201 });

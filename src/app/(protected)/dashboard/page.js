@@ -1,19 +1,11 @@
-import { cookies } from 'next/headers';
-import jwt from 'jsonwebtoken';
+import Access from '@lib/middlewareAccess'
 import { redirect } from 'next/navigation';
 import { Calendar, CheckCircle, Notebook } from 'lucide-react'
 
 
 export default async function LoggedPage () {
 
-  const cookieStore = cookies();
-  const token = cookieStore.get('cookieUser')?.value;
-
-  if (!token) {
-    redirect('login')
-  }
-
-  const decoded = jwt.verify(token, process.env.JWT_SECRET);
+  const decoded = Access()
 
   if(decoded){
     
