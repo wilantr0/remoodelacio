@@ -5,7 +5,30 @@ import { useState, useEffect } from "react";
 export default function AttendancePage() {
   const [alumnes, setAlumnes] = useState([]);
   const [classeSeleccionada, setClasseSeleccionada] = useState("");
+  const [loading, setLoading] = useState(true);
+  const [role, setRole] = useState(null);
 
+  // Verificar rol de l'usuari
+  useEffect(() => {
+    const fetchUserRole = async () => {
+      try {
+        const response = await fetch("/api/user");
+        if (!response.ok) throw new Error("Error obtenint el rol de l'usuari");
+
+        const data = await response.json();
+        setRole(data.role); // Assignem el rol de l'usuari
+      } catch (error) {
+        console.error("Error obtenint el rol de l'usuari:", error);
+        alert("No s'ha pogut verificar el rol de l'usuari.");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUserRole();
+  }, []);
+
+  // Carregar alumnes segons la classe seleccionada
   useEffect(() => {
     const fetchAlumnes = async () => {
       try {
@@ -78,6 +101,19 @@ export default function AttendancePage() {
       alert("Error en guardar l'assistència");
     }
   };
+
+  if (loading) {
+    return <p className="text-center mt-4">Carregant...</p>;
+  }
+
+  if (role !== "PROFESSOR") {
+    return (
+      <div className="text-center mt-8">
+        <h1 className="text-2xl font-bold text-red-600">Accés no autoritzat</h1>
+        <p className="text-gray-600">Només els professors poden accedir a aquesta pàgina.</p>
+      </div>
+    );
+  }
 
   return (
     <div className="p-4">
