@@ -40,7 +40,7 @@ export default async function LoggedPage () {
                 </a>
                 <a href='/assistance' className='p-4 border-[1.5px] border-neutral-800 rounded-md shadow-inner decoration-transparent text-black flex flex-col items-center justify-center'>
                   <CheckCircle className='h-12 w-12 mb-4 text-blue-600' />
-                  <h3 className='text-lg font-bold mb-2'>Asistència</h3>
+                  <h3 className='text-lg font-bold mb-2'>Assistència</h3>
                   <p className='text-sm text-neutral-600 text-center'>Controla l&#39;asistència a les teves classes</p>
                 </a>
                 <a href='/bloc' className='p-4 border-[1.5px] border-neutral-800 rounded-md shadow-inner decoration-transparent text-black flex flex-col items-center justify-center'>
